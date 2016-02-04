@@ -111,7 +111,6 @@ namespace AppSettings.NET
 
                 if (settings != null && settings.Count > 0 && IsCache())
                 {
-                    //缓存依赖文件
                     var cdd = new CacheDependency(XmlPath); 
                     HttpRuntime.Cache.Insert(Key, settings, cdd, DateTime.MaxValue, System.Web.Caching.Cache.NoSlidingExpiration);
                 }

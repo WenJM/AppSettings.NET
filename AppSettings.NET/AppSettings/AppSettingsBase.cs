@@ -54,7 +54,6 @@ namespace AppSettings.NET
                     }
                 }
 
-                //添加缓存依赖文件
                 var cdd = new CacheDependency(XmlPath); 
                 HttpRuntime.Cache.Insert(IsCachekey, isCache, cdd, DateTime.MaxValue, System.Web.Caching.Cache.NoSlidingExpiration);
 
