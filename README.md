@@ -14,7 +14,7 @@
 使用方法<br />
 1、add键值类型的节点，直接通过Key获取值：SettingsManager.AppSettings["name"]<br />
 2、其他类型节点，可通过节点名称和属性名称获取属性值：SettingsManager.GetAttributesValue("Person", "Name")<br />
-3、和实体一致的节点，可直接传入实体类型获取对应的节点信息：SettingsManager.GetEntity<Person>()<br />
+3、和实体一致的节点，可直接传入实体类型获取对应的节点信息：SettingsManager.GetEntity\<Person>()<br />
 
 缓存补充说明：<br />
 1、如果需要把配置信息加载在缓存中，在AppSettings节点添加属性Cache="true"。<br />
