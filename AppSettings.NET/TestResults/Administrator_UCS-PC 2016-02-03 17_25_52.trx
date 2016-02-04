@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<TestRun id="22f45047-1398-4624-86db-02ac2ac2665e" name="Administrator@UCS-PC 2016-02-03 17:25:52" runUser="ucs-pc\Administrator" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <TestSettings name="默认测试设置" id="a3108f6c-1c68-435e-b8b4-3ff6a582d866">
+    <Deployment runDeploymentRoot="Administrator_UCS-PC 2016-02-03 17_25_52">
+      <DeploymentItem filename="E:\测试\AppSettings.NET\bin\Debug\AppSettings.NET.dll" />
+    </Deployment>
+    <Execution>
+      <TestTypeSpecific />
+      <AgentRule name="Execution Agents">
+      </AgentRule>
+    </Execution>
+  </TestSettings>
+  <Times creation="2016-02-03T17:25:52.1615502+08:00" queuing="2016-02-03T17:25:54.8817058+08:00" start="2016-02-03T17:25:55.0147134+08:00" finish="2016-02-03T17:26:09.8775635+08:00" />
+  <ResultSummary outcome="Error">
+    <Counters total="1" executed="1" error="0" failed="0" timeout="0" aborted="1" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" passed="0" completed="0" inProgress="0" pending="0" />
+    <RunInfos>
+      <RunInfo computerName="UCS-PC" outcome="Error" timestamp="2016-02-03T17:26:09.8775635+08:00">
+        <Text>测试宿主进程意外退出。</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+  <TestDefinitions>
+    <UnitTest name="GetValueByKey" storage="e:\测试\appsettings.test\bin\debug\appsettings.test.dll" id="66a86efd-2c01-ba3b-fc30-119b470f581f">
+      <Execution id="f0685f7a-a409-4724-92ed-9bdd47c0b485" />
+      <TestMethod codeBase="E:/测试/AppSettings.Test/bin/Debug/AppSettings.Test.DLL" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="AppSettings.Test.SettingsManagerTest, AppSettings.Test, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" name="GetValueByKey" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestLists>
+    <TestList name="列表中未列出的结果" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="所有已加载的结果" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <TestEntries>
+    <TestEntry testId="66a86efd-2c01-ba3b-fc30-119b470f581f" executionId="f0685f7a-a409-4724-92ed-9bdd47c0b485" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <Results>
+    <UnitTestResult executionId="f0685f7a-a409-4724-92ed-9bdd47c0b485" testId="66a86efd-2c01-ba3b-fc30-119b470f581f" testName="GetValueByKey" computerName="UCS-PC" duration="00:00:14.7068412" startTime="2016-02-03T17:25:55.1707223+08:00" endTime="2016-02-03T17:26:09.8775635+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Aborted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f0685f7a-a409-4724-92ed-9bdd47c0b485">
+    </UnitTestResult>
+  </Results>
+</TestRun>

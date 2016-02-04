@@ -1,0 +1,5 @@
+E:\测试\AppSettings.NET\bin\Debug\AppSettings.NET.dll
+E:\测试\AppSettings.NET\bin\Debug\AppSettings.NET.pdb
+E:\测试\AppSettings.NET\obj\Debug\AppSettings.NET.dll
+E:\测试\AppSettings.NET\obj\Debug\AppSettings.NET.pdb
+E:\测试\AppSettings.NET\obj\Debug\AppSettings.NET.csprojResolveAssemblyReference.cache
