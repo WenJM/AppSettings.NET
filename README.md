@@ -1,4 +1,4 @@
-# AppSettings.NET
+### AppSettings.NET
 
 提供对自定义应用程序配置文件的访问（支持深层节点）<br />
 1、必须在配置文件Web.config中的节点AppSettings添加自定义配置的物理路径，key="AppSettingsPath"。<br />
