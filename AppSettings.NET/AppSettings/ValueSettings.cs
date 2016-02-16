@@ -13,17 +13,11 @@ namespace AppSettings.NET
 {
     internal class ValueSettings : AppSettingsBase
     {
-        /// <summary>
-        /// 缓存Key
-        /// </summary>
         protected string Key 
         {
             get { return "APPSETTINGSLIST_Default"; }
         }
 
-        /// <summary>
-        /// 获取自定义配置的数据。
-        /// </summary>
         public NameValueCollection AppSettings
         {
             get
@@ -37,10 +31,6 @@ namespace AppSettings.NET
             }
         }
 
-        /// <summary>
-        /// 加载键值类型的自定义配置
-        /// </summary>
-        /// <returns></returns>
         public NameValueCollection LoadData()
         {
             try
@@ -64,11 +54,6 @@ namespace AppSettings.NET
             }
         }
 
-        /// <summary>
-        /// 加载键值类型的自定义配置
-        /// </summary>
-        /// <param name="xmlPath">自定义配置文件物理地址</param>
-        /// <returns></returns>
         public NameValueCollection GetAppSettings(string xmlPath)
         {
             var nv = new NameValueCollection();

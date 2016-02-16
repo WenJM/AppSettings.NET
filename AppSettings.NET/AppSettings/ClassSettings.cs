@@ -12,18 +12,11 @@ namespace AppSettings.NET
 {
     internal class ClassSettings<T> : AppSettingsBase
     {
-        /// <summary>
-        /// 缓存Key
-        /// </summary>
         protected string Key
         {
             get { return "APPSETTINGSLIST_Class_" + ReflectionHelper.GetClassName<T>(); }
         }
 
-        /// <summary>
-        /// 获取自定义配置实体信息
-        /// </summary>
-        /// <returns></returns>
         public T GetEntity(string xmlSubPath = null)
         {
             var settings = HttpRuntime.Cache.Get(Key);
@@ -40,11 +33,6 @@ namespace AppSettings.NET
             return default(T);
         }
 
-        /// <summary>
-        /// 获取自定义配置实体信息
-        /// </summary>
-        /// <param name="predicate">条件</param>
-        /// <returns></returns>
         public T GetEntity(Func<T, bool> predicate, string xmlSubPath = null)
         {
             var settings = HttpRuntime.Cache.Get(Key);
@@ -61,10 +49,6 @@ namespace AppSettings.NET
             return default(T);
         }
 
-        /// <summary>
-        /// 获取自定义配置实体信息集合
-        /// </summary>
-        /// <returns></returns>
         public List<T> GetEntityList(string xmlSubPath = null)
         {
             var settings = HttpRuntime.Cache.Get(Key);
@@ -75,10 +59,6 @@ namespace AppSettings.NET
             return settings as List<T>;
         }
 
-        /// <summary>
-        /// 获取自定义配置实体信息集合
-        /// </summary>
-        /// <returns></returns>
         public List<T> GetEntityList(Func<T, bool> predicate, string xmlSubPath = null)
         {
             var settings = HttpRuntime.Cache.Get(Key);
@@ -95,10 +75,6 @@ namespace AppSettings.NET
             return null;
         }
 
-        /// <summary>
-        /// 加载自定义配置数据
-        /// </summary>
-        /// <returns></returns>
         public List<T> LoadData(string xmlSubPath = null)
         {
             try
@@ -122,12 +98,6 @@ namespace AppSettings.NET
             }
         }
 
-        /// <summary>
-        /// 加载自定义配置列表
-        /// </summary>
-        /// <param name="xmlPath">自定义配置文件物理地址</param>
-        /// <param name="xmlSubPath">配置文件中的相对位置</param>
-        /// <returns></returns>
         private List<T> GetAppSettings(string xmlPath, string xmlSubPath = null)
         {
             var doc = XDocument.Load(xmlPath);

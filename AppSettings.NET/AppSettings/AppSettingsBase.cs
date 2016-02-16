@@ -13,9 +13,6 @@ namespace AppSettings.NET
     {
         private string IsCachekey = "APPSETTINGSBASE_IsCache";
 
-        /// <summary>
-        /// 自定义配置文件物理路径
-        /// </summary>
         protected string XmlPath
         {
             get
@@ -33,10 +30,6 @@ namespace AppSettings.NET
             }
         }
 
-        /// <summary>
-        /// 是否保存到缓存中
-        /// </summary>
-        /// <returns></returns>
         protected bool IsCache()
         {
             if (HttpRuntime.Cache[IsCachekey] == null)

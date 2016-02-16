@@ -38,6 +38,4 @@ namespace AppSettings.Test
             Assert.IsNotNull(person);
         }
     }
-
-
 }
