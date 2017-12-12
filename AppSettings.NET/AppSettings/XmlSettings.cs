@@ -7,7 +7,7 @@ using System.Configuration;
 using System.Web;
 using System.Web.Caching;
 
-namespace AppSettings.NET
+namespace AppSettings.Client
 {
     internal class XmlSettings : AppSettingsBase
     {

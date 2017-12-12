@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AppSettings.NET
+namespace AppSettings.Client
 {
     internal static class StringHelper
     {

@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Xml.Linq;
 using System.Collections;
 
-namespace AppSettings.NET
+namespace AppSettings.Client
 {
     /// <summary>
     /// 反射帮助类

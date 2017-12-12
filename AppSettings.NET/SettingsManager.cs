@@ -4,7 +4,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 
-namespace AppSettings.NET
+namespace AppSettings.Client
 {
     /// <summary>
     /// 提供对自定义应用程序配置文件的访问（支持深层节点）

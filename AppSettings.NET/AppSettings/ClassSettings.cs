@@ -8,7 +8,7 @@ using System.Web;
 using System.Web.Caching;
 using System.Linq.Expressions;
 
-namespace AppSettings.NET
+namespace AppSettings.Client
 {
     internal class ClassSettings<T> : AppSettingsBase
     {
@@ -117,7 +117,7 @@ namespace AppSettings.NET
                 }
             }
 
-            List<T> result = new List<T>();
+            var result = new List<T>();
             if (settings.Count == 0) 
                 return result;
 

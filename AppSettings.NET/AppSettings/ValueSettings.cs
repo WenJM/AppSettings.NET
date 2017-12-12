@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Configuration;
-
-using System.Collections.Specialized;
 using System.Xml.Linq;
 using System.Web;
 using System.Web.Caching;
 
-namespace AppSettings.NET
+namespace AppSettings.Client
 {
     internal class ValueSettings : AppSettingsBase
     {

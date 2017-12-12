@@ -49,9 +49,9 @@
     <Compile Include="SettingsManagerTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AppSettings.NET\AppSettings.NET.csproj">
+    <ProjectReference Include="..\AppSettings.NET\AppSettings.Client.csproj">
       <Project>{62EBDFF0-BAEC-49DD-8EB1-266ED53BD272}</Project>
-      <Name>AppSettings.NET</Name>
+      <Name>AppSettings.Client</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
