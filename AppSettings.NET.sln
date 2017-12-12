@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppSettings.Client", "AppSettings.NET\AppSettings.Client.csproj", "{62EBDFF0-BAEC-49DD-8EB1-266ED53BD272}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppSettings.Client", "AppSettings.Client\AppSettings.Client.csproj", "{62EBDFF0-BAEC-49DD-8EB1-266ED53BD272}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppSettings.Test", "AppSettings.Test\AppSettings.Test.csproj", "{A23B5927-D3B0-4D25-963B-AE4E017D2BF2}"
 EndProject
