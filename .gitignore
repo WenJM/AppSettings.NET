@@ -3,3 +3,9 @@ AppSettings.NET/bin/
 AppSettings.NET/obj/
 AppSettings.Test/bin/
 AppSettings.Test/obj/
+*.suo
+/AppSettings.Client/obj/Debug
+/AppSettings.Cmd
+/AppSettings.Cmd2
+/AppSettings.Server/obj/Debug
+/AppSettings.Web
