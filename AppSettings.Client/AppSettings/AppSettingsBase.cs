@@ -11,7 +11,7 @@ namespace AppSettings.Client
 {
     internal abstract class AppSettingsBase
     {
-        private string IsCachekey = "APPSETTINGSBASE_IsCache";
+        private string IsCachekey = "APPSETTINGSBASE_ISCACHE";
 
         protected string XmlPath
         {
@@ -26,6 +26,7 @@ namespace AppSettings.Client
                 {
                     return file;
                 }
+                //net url is not safe
                 if (IsExist(file))
                 {
                     return file;
