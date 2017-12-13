@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.IO;
+using System.Configuration;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Text;
-using System.Configuration;
 using System.Xml.Linq;
 using System.Web;
 using System.Web.Caching;
@@ -14,7 +13,7 @@ namespace AppSettings.Client
     {
         protected string Key 
         {
-            get { return "APPSETTINGSLIST_Default"; }
+            get { return "APPSETTINGSLIST_DEFAULT"; }
         }
 
         public NameValueCollection AppSettings
@@ -40,7 +39,7 @@ namespace AppSettings.Client
                     HttpRuntime.Cache.Remove(Key);
                 }
 
-                if (settings != null && settings.Count > 0 && IsCache())
+                if (settings != null && settings.Count > 0 && IsCache() && File.Exists(XmlPath))
                 {
                     var cdd = new CacheDependency(XmlPath); 
                     HttpRuntime.Cache.Insert(Key, settings, cdd, DateTime.MaxValue, System.Web.Caching.Cache.NoSlidingExpiration);

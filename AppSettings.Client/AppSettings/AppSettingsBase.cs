@@ -1,12 +1,11 @@
 ﻿using System;
 using System.IO;
+using System.Net;
 using System.Linq;
 using System.Xml.Linq;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Web;
 using System.Web.Caching;
-using System.Net;
 
 namespace AppSettings.Client
 {

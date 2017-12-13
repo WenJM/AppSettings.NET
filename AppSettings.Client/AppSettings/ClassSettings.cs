@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections;
+using System.IO;
+using System.Configuration;
 using System.Collections.Generic;
 using System.Linq;
-using System.Configuration;
 using System.Xml.Linq;
 using System.Web;
 using System.Web.Caching;
-using System.Linq.Expressions;
 
 namespace AppSettings.Client
 {
@@ -14,7 +13,7 @@ namespace AppSettings.Client
     {
         protected string Key
         {
-            get { return "APPSETTINGSLIST_Class_" + ReflectionHelper.GetClassName<T>(); }
+            get { return "APPSETTINGSLIST_CLASS_" + ReflectionHelper.GetClassName<T>(); }
         }
 
         public T GetEntity(string xmlSubPath = null)
@@ -85,7 +84,7 @@ namespace AppSettings.Client
                     HttpRuntime.Cache.Remove(Key);
                 }
 
-                if (settings != null && settings.Count > 0 && IsCache())
+                if (settings != null && settings.Count > 0 && IsCache() && File.Exists(XmlPath))
                 {
                     var cdd = new CacheDependency(XmlPath); 
                     HttpRuntime.Cache.Insert(Key, settings, cdd, DateTime.MaxValue, System.Web.Caching.Cache.NoSlidingExpiration);
