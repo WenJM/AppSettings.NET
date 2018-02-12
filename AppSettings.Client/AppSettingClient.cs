@@ -1,15 +1,15 @@
 ﻿using System;
+using System.Xml.Linq;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Linq;
-using System.Text;
+using AppSettings.Client.AppSettings;
 
 namespace AppSettings.Client
 {
     /// <summary>
     /// 提供对自定义应用程序配置文件的访问（支持深层节点）
     /// </summary>
-    public static class SettingsManager
+    public static class AppSettingClient
     {
         private static ValueSettings _valueSettings = new ValueSettings();
 
@@ -40,7 +40,7 @@ namespace AppSettings.Client
         /// <summary>
         /// 根据实体获取对应的自定义配置，实体名和属性要和节点一致
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T">实体类型</typeparam>
         /// <returns></returns>
         public static T GetEntity<T>(string xmlSubPath = null)
         {
@@ -50,7 +50,9 @@ namespace AppSettings.Client
         /// <summary>
         /// 根据实体获取对应的自定义配置，实体名和属性要和节点一致
         /// </summary>
-        /// <typeparam name="T">条件</typeparam>
+        /// <typeparam name="T">实体类型</typeparam>
+        /// <param name="predicate">查询条件</param>
+        /// <param name="xmlSubPath">子节点</param>
         /// <returns></returns>
         public static T GetEntity<T>(Func<T, bool> predicate, string xmlSubPath = null)
         {
@@ -60,20 +62,24 @@ namespace AppSettings.Client
         /// <summary>
         /// 根据实体获取对应的自定义配置，实体名和属性要和节点一致
         /// </summary>
+        /// <typeparam name="T">实体类型</typeparam>
+        /// <param name="xmlSubPath">子节点</param>
         /// <returns></returns>
         public static List<T> GetEntityList<T>(string xmlSubPath = null)
         {
-            return (new ClassSettings<T>()).GetEntityList(xmlSubPath);
+            return (new ClassSettings<T>()).GetEntitys(xmlSubPath);
         }
 
         /// <summary>
         /// 根据实体获取对应的自定义配置，实体名和属性要和节点一致
         /// </summary>
-        /// <param name="predicate">条件</param>
+        /// <typeparam name="T">实体类型</typeparam>
+        /// <param name="predicate">查询条件</param>
+        /// <param name="xmlSubPath">子节点</param>
         /// <returns></returns>
         public static List<T> GetEntityList<T>(Func<T, bool> predicate, string xmlSubPath = null)
         {
-            return (new ClassSettings<T>()).GetEntityList(predicate, xmlSubPath);
+            return (new ClassSettings<T>()).GetEntitys(predicate, xmlSubPath);
         }
 
         /// <summary>
@@ -82,8 +88,8 @@ namespace AppSettings.Client
         /// <returns></returns>
         public static void InitSettingsCache()
         {
-            _valueSettings.LoadData();
-            _xmlSettings.LoadData();
+            _valueSettings.LoadConfig<NameValueCollection>(null);
+            _xmlSettings.LoadConfig<List<XElement>>(null);
         }
 
         /// <summary>
@@ -92,7 +98,7 @@ namespace AppSettings.Client
         /// <returns></returns>
         public static void InitSettingsCache<T>()
         {
-            (new ClassSettings<T>()).LoadData();
+            (new ClassSettings<T>()).LoadConfig<List<T>>(null);
         }
     }
 }

@@ -1,17 +1,14 @@
-﻿using System;
-using System.IO;
-using System.Configuration;
-using System.Collections.Specialized;
+﻿using System.Collections.Specialized;
 using System.Linq;
-using System.Xml.Linq;
 using System.Web;
-using System.Web.Caching;
+using System.Xml.Linq;
+using AppSettings.Client.Extensions;
 
-namespace AppSettings.Client
+namespace AppSettings.Client.AppSettings
 {
     internal class ValueSettings : AppSettingsBase
     {
-        protected string Key 
+        protected override string Key 
         {
             get { return "APPSETTINGSLIST_DEFAULT"; }
         }
@@ -20,46 +17,25 @@ namespace AppSettings.Client
         {
             get
             {
-                var settings = HttpRuntime.Cache.Get(Key);
+                var settings = HttpRuntime.Cache.Get(Key) as NameValueCollection;
                 if (settings == null)
                 {
-                    settings = LoadData();
-                }
-                return (NameValueCollection)settings;
-            }
-        }
-
-        public NameValueCollection LoadData()
-        {
-            try
-            {
-                var settings = GetAppSettings(XmlPath);
-                if (HttpRuntime.Cache[Key] != null)
-                {
-                    HttpRuntime.Cache.Remove(Key);
-                }
-
-                if (settings != null && settings.Count > 0 && IsCache() && File.Exists(XmlPath))
-                {
-                    var cdd = new CacheDependency(XmlPath); 
-                    HttpRuntime.Cache.Insert(Key, settings, cdd, DateTime.MaxValue, System.Web.Caching.Cache.NoSlidingExpiration);
+                    settings = LoadConfig<NameValueCollection>(null);
                 }
                 return settings;
             }
-            catch (Exception ex)
-            {
-                throw new ConfigurationErrorsException(ex.Message);
-            }
         }
 
-        public NameValueCollection GetAppSettings(string xmlPath)
+        protected override TSource GetAppSettings<TSource>(string xmlPath, string xmlSubPath)
         {
             var nv = new NameValueCollection();
 
             var doc = XDocument.Load(xmlPath);
 
             var settings = doc.Elements().FirstOrDefault(s => s.Name.LocalName.EqualsIgnoreCase("AppSettings"));
+
             var adds = settings.Elements().Where(s => s.Name.LocalName.EqualsIgnoreCase("add")).ToList();
+
             foreach (XElement x in adds)
             {
                 var key = x.Attributes().FirstOrDefault(s => s.Name.LocalName.EqualsIgnoreCase("key"));
@@ -72,7 +48,7 @@ namespace AppSettings.Client
                     }
                 }
             }
-            return nv;
+            return nv as TSource;
         }
     }
 }

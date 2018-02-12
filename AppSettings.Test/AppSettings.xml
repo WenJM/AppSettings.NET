@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<AppSettings Cache="true">
+<AppSettings>
   <add key="zhangsan" value="age:18" />
   <Person Name="张三" Age="18" Height="185" />
 </AppSettings>

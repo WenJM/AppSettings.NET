@@ -42,13 +42,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppSettingConfig.cs" />
     <Compile Include="AppSettings\AppSettingsBase.cs" />
     <Compile Include="AppSettings\ClassSettings.cs" />
-    <Compile Include="SettingsManager.cs" />
+    <Compile Include="AppSettingClient.cs" />
     <Compile Include="AppSettings\ValueSettings.cs" />
     <Compile Include="AppSettings\XmlSettings.cs" />
     <Compile Include="Util\ReflectionHelper.cs" />
-    <Compile Include="Util\StringHelper.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

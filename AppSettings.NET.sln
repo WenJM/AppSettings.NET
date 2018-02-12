@@ -1,17 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppSettings.Client", "AppSettings.Client\AppSettings.Client.csproj", "{62EBDFF0-BAEC-49DD-8EB1-266ED53BD272}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppSettings.Test", "AppSettings.Test\AppSettings.Test.csproj", "{A23B5927-D3B0-4D25-963B-AE4E017D2BF2}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppSettings.Web", "AppSettings.Web\AppSettings.Web.csproj", "{90408614-1C4F-4F31-AC96-BB1154071C87}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppSettings.Cmd", "AppSettings.Cmd\AppSettings.Cmd.csproj", "{28F1EBC9-300C-4D18-9418-60B378DF0A3A}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppSettings.Cmd2", "AppSettings.Cmd2\AppSettings.Cmd2.csproj", "{6DE14ED2-33B7-45E6-B0CC-3A3C57A6CE06}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppSettings.Server", "AppSettings.Server\AppSettings.Server.csproj", "{EA2433DA-962F-4D35-82FD-EA3A546ABA16}"
 EndProject
@@ -29,18 +23,6 @@ Global
 		{A23B5927-D3B0-4D25-963B-AE4E017D2BF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A23B5927-D3B0-4D25-963B-AE4E017D2BF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A23B5927-D3B0-4D25-963B-AE4E017D2BF2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{90408614-1C4F-4F31-AC96-BB1154071C87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{90408614-1C4F-4F31-AC96-BB1154071C87}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{90408614-1C4F-4F31-AC96-BB1154071C87}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{90408614-1C4F-4F31-AC96-BB1154071C87}.Release|Any CPU.Build.0 = Release|Any CPU
-		{28F1EBC9-300C-4D18-9418-60B378DF0A3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{28F1EBC9-300C-4D18-9418-60B378DF0A3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{28F1EBC9-300C-4D18-9418-60B378DF0A3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{28F1EBC9-300C-4D18-9418-60B378DF0A3A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6DE14ED2-33B7-45E6-B0CC-3A3C57A6CE06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6DE14ED2-33B7-45E6-B0CC-3A3C57A6CE06}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6DE14ED2-33B7-45E6-B0CC-3A3C57A6CE06}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6DE14ED2-33B7-45E6-B0CC-3A3C57A6CE06}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EA2433DA-962F-4D35-82FD-EA3A546ABA16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EA2433DA-962F-4D35-82FD-EA3A546ABA16}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EA2433DA-962F-4D35-82FD-EA3A546ABA16}.Release|Any CPU.ActiveCfg = Release|Any CPU

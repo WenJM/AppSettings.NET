@@ -1,66 +1,71 @@
 ﻿using System;
-using System.IO;
-using System.Net;
-using System.Linq;
-using System.Xml.Linq;
 using System.Configuration;
+using System.IO;
+using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Caching;
+using System.Xml.Linq;
 
-namespace AppSettings.Client
+namespace AppSettings.Client.AppSettings
 {
     internal abstract class AppSettingsBase
     {
         private string IsCachekey = "APPSETTINGSBASE_ISCACHE";
 
+        protected abstract string Key { get;}
+
         protected string XmlPath
         {
             get
             {
-                string file = ConfigurationManager.AppSettings["AppSettingsPath"];
-                if (string.IsNullOrEmpty(file))
+                string filePath = ConfigurationManager.AppSettings["AppSettingsPath"];
+                if (string.IsNullOrEmpty(filePath))
                 {
                     throw new ConfigurationErrorsException("自定义配置文件配置AppSettingsPath未找到");
                 }
-                if (File.Exists(file))
+                if (filePath.StartsWith("~"))
                 {
-                    return file;
+                    filePath = AppDomain.CurrentDomain.BaseDirectory + "\\" + filePath.TrimStart('~').TrimStart('\\');
                 }
-                //net url is not safe
-                if (IsExist(file))
+                if (File.Exists(filePath))
                 {
-                    return file;
+                    return filePath;
+                }
+                if (IsRemoteExist(filePath))
+                {
+                    return filePath;
                 }
                 throw new ConfigurationErrorsException("自定义配置文件不存在");
             }
         }
 
-        protected bool IsCache()
-        {
-            if (HttpRuntime.Cache[IsCachekey] == null)
-            {
-                var doc = XDocument.Load(XmlPath);
-                var appSettings = doc.Elements().FirstOrDefault(s => s.Name.LocalName.EqualsIgnoreCase("AppSettings"));
+        protected abstract TSource GetAppSettings<TSource>(string xmlPath, string xmlSubPath) where TSource : class;
 
-                var isCache = false;
-                if (appSettings != null)
+        internal TSource LoadConfig<TSource>(string xmlSubPath) where TSource : class
+        {
+            try
+            {
+                var settings = GetAppSettings<TSource>(XmlPath, xmlSubPath);
+                if (HttpRuntime.Cache[Key] != null)
                 {
-                    var attributes = appSettings.Attributes().FirstOrDefault(s => s.Name.LocalName.EqualsIgnoreCase("Cache"));
-                    if (attributes != null)
-                    {
-                        bool.TryParse(attributes.Value, out isCache);
-                    }
+                    HttpRuntime.Cache.Remove(Key);
                 }
 
-                var cdd = new CacheDependency(XmlPath); 
-                HttpRuntime.Cache.Insert(IsCachekey, isCache, cdd, DateTime.MaxValue, System.Web.Caching.Cache.NoSlidingExpiration);
-
-                return isCache;
+                if (AppSettingConfig.IsLoadCache && File.Exists(XmlPath) && settings != null)
+                {
+                    var cdd = new CacheDependency(XmlPath);
+                    HttpRuntime.Cache.Insert(Key, settings, cdd, DateTime.MaxValue, Cache.NoSlidingExpiration);
+                }
+                return settings;
             }
-            return (bool)HttpRuntime.Cache[IsCachekey];
+            catch (Exception ex)
+            {
+                throw new ConfigurationErrorsException(ex.Message);
+            }
         }
 
-        private bool IsExist(string uri)
+        private bool IsRemoteExist(string uri)
         {
             HttpWebRequest req = null;
             HttpWebResponse res = null;

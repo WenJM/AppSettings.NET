@@ -4,8 +4,9 @@ using System.Linq;
 using System.Reflection;
 using System.Xml.Linq;
 using System.Collections;
+using AppSettings.Client.Extensions;
 
-namespace AppSettings.Client
+namespace AppSettings.Client.Util
 {
     /// <summary>
     /// 反射帮助类
