@@ -1,9 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Xml.Linq;
-using System.Collections;
+using System.Reflection;
 using AppSettings.Client.Extensions;
 
 namespace AppSettings.Client.Util
@@ -13,35 +13,11 @@ namespace AppSettings.Client.Util
     /// </summary>
     internal static class ReflectionHelper
     {
-        /// <summary>
-        /// 获取类名
-        /// </summary>
-        /// <returns></returns>
-        internal static string GetClassName<T>()
-        {
-            return typeof(T).Name;
-        }
-
-        /// <summary>
-        /// 获取类属性
-        /// </summary>
-        /// <returns></returns>
-        internal static PropertyInfo[] GetPropertys<T>()
-        {
-            return typeof(T).GetProperties();
-        }
-
-        /// <summary>
-        /// 获取默认值
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <param name="type"></param>
-        /// <returns></returns>
         internal static object GetDefaultValue(object value, Type type)
         {
             try
             {
-                value = ChangeValueType(value, type);
+                value = ConvertValue(value, type);
             }
             catch (Exception)
             {
@@ -49,40 +25,28 @@ namespace AppSettings.Client.Util
             }
             return value;
         }
-
-        /// <summary>
-        /// 转换数据类型
-        /// </summary>
-        /// <param name="value"></param>
-        /// <param name="conversionType"></param>
-        /// <returns></returns>
-        internal static object ChangeValueType(object value, Type conversionType)
+        
+        internal static object ConvertValue(object value, Type type)
         {
-            return ChangeValueType(value, conversionType, null);
+            return ConvertValue(value, type, null);
         }
-
-        /// <summary>
-        /// 转换数据类型
-        /// </summary>
-        /// <param name="value"></param>
-        /// <param name="conversionType"></param>
-        /// <param name="provider"></param>
-        /// <returns></returns>
-        internal static object ChangeValueType(object value, Type conversionType, IFormatProvider provider)
+        
+        internal static object ConvertValue(object value, Type type, IFormatProvider provider)
         {
-            if (conversionType == null)
+            if (type == null)
             {
                 throw new ArgumentNullException("conversionType");
             }
 
-            bool valueCanbeNull = IsValueNullable(conversionType);
-            if (valueCanbeNull && (value == null || value.ToString().Length == 0))//如果Nullable<>类型，且值是空，则直接返回空
+            bool valueCanbeNull = IsValueNullable(type);
+            if (valueCanbeNull && (value == null || value.ToString().Length == 0))
             {
                 return null;
             }
+
             if (value == null)
             {
-                if (conversionType.IsValueType)
+                if (type.IsValueType)
                 {
                     throw new InvalidCastException("值为空！");
                 }
@@ -91,13 +55,13 @@ namespace AppSettings.Client.Util
             IConvertible convertible = value as IConvertible;
             if (convertible == null)
             {
-                if (value.GetType() != conversionType)
+                if (value.GetType() != type)
                 {
                     throw new InvalidCastException("值不能被转换！");
                 }
                 return value;
             }
-            if (conversionType == typeof(System.Boolean) || conversionType == typeof(Nullable<System.Boolean>))
+            if (type == typeof(bool) || type == typeof(bool?))
             {
                 if (value.ToString() == "1")
                     return true;
@@ -105,74 +69,69 @@ namespace AppSettings.Client.Util
                     return false;
                 return convertible.ToBoolean(provider);
             }
-            if (conversionType == typeof(System.Char) || conversionType == typeof(Nullable<System.Char>))
+            if (type == typeof(char) || type == typeof(char?))
             {
                 return convertible.ToChar(provider);
             }
-            if (conversionType == typeof(System.SByte) || conversionType == typeof(Nullable<System.SByte>))
+            if (type == typeof(sbyte) || type == typeof(sbyte?))
             {
                 return convertible.ToSByte(provider);
             }
-            if (conversionType == typeof(System.Byte) || conversionType == typeof(Nullable<System.Byte>))
+            if (type == typeof(byte) || type == typeof(byte?))
             {
                 return convertible.ToByte(provider);
             }
-            if (conversionType == typeof(System.Int16) || conversionType == typeof(Nullable<System.Int16>))
+            if (type == typeof(short) || type == typeof(short?))
             {
                 return convertible.ToInt16(provider);
             }
-            if (conversionType == typeof(System.UInt16) || conversionType == typeof(Nullable<System.UInt16>))
+            if (type == typeof(ushort) || type == typeof(ushort?))
             {
                 return convertible.ToUInt16(provider);
             }
-            if (conversionType == typeof(System.Int32) || conversionType == typeof(Nullable<System.Int32>))
+            if (type == typeof(int) || type == typeof(int?))
             {
                 return convertible.ToInt32(provider);
             }
-            if (conversionType == typeof(System.UInt32) || conversionType == typeof(Nullable<System.UInt32>))
+            if (type == typeof(uint) || type == typeof(uint?))
             {
                 return convertible.ToUInt32(provider);
             }
-            if (conversionType == typeof(System.Int64) || conversionType == typeof(Nullable<System.Int64>))
+            if (type == typeof(long) || type == typeof(long?))
             {
                 return convertible.ToInt64(provider);
             }
-            if (conversionType == typeof(System.UInt64) || conversionType == typeof(Nullable<System.UInt64>))
+            if (type == typeof(ulong) || type == typeof(ulong?))
             {
                 return convertible.ToUInt64(provider);
             }
-            if (conversionType == typeof(System.Single) || conversionType == typeof(Nullable<System.Single>))
+            if (type == typeof(float) || type == typeof(float?))
             {
                 return convertible.ToSingle(provider);
             }
-            if (conversionType == typeof(System.Double) || conversionType == typeof(Nullable<System.Double>))
+            if (type == typeof(double) || type == typeof(double?))
             {
                 return convertible.ToDouble(provider);
             }
-            if (conversionType == typeof(System.Decimal) || conversionType == typeof(Nullable<System.Decimal>))
+            if (type == typeof(decimal) || type == typeof(decimal?))
             {
                 return convertible.ToDecimal(provider);
             }
-            if (conversionType == typeof(System.DateTime) || conversionType == typeof(Nullable<System.DateTime>))
+            if (type == typeof(DateTime) || type == typeof(DateTime?))
             {
                 return convertible.ToDateTime(provider);
             }
-            if (conversionType == typeof(System.String))
+            if (type == typeof(string))
             {
                 return convertible.ToString(provider);
             }
-            if (conversionType == typeof(System.Object))
+            if (type == typeof(object))
             {
                 return value;
             }
             return value;
         }
 
-        /// <summary>
-        /// 判断改类型是否是基础类型
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
         internal static bool IsBasicType(Type type)
         {
             switch (type.Name)
@@ -200,51 +159,40 @@ namespace AppSettings.Client.Util
             }
         }
 
-        /// <summary>
-        /// 判断该类型是否是可为空值的数据类型
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
         internal static bool IsValueNullable(Type type)
         {
-            if (type == typeof(Nullable<System.Boolean>))
+            if (type == typeof(bool?))
                 return true;
-            if (type == typeof(Nullable<System.Char>))
+            if (type == typeof(char?))
                 return true;
-            if (type == typeof(Nullable<System.SByte>))
+            if (type == typeof(sbyte?))
                 return true;
-            if (type == typeof(Nullable<System.Byte>))
+            if (type == typeof(byte?))
                 return true;
-            if (type == typeof(Nullable<System.Int16>))
+            if (type == typeof(short?))
                 return true;
-            if (type == typeof(Nullable<System.UInt16>))
+            if (type == typeof(ushort?))
                 return true;
-            if (type == typeof(Nullable<System.Int32>))
+            if (type == typeof(int?))
                 return true;
-            if (type == typeof(Nullable<System.UInt32>))
+            if (type == typeof(uint?))
                 return true;
-            if (type == typeof(Nullable<System.Int64>))
+            if (type == typeof(long?))
                 return true;
-            if (type == typeof(Nullable<System.UInt64>))
+            if (type == typeof(ulong?))
                 return true;
-            if (type == typeof(Nullable<System.Single>))
+            if (type == typeof(float?))
                 return true;
-            if (type == typeof(Nullable<System.Double>))
+            if (type == typeof(double?))
                 return true;
-            if (type == typeof(Nullable<System.Decimal>))
+            if (type == typeof(decimal?))
                 return true;
-            if (type == typeof(Nullable<System.DateTime>))
+            if (type == typeof(DateTime?))
                 return true;
             return false;
         }
-
-        /// <summary>
-        /// 生成类型集合
-        /// </summary>
-        /// <param name="elements"></param>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        internal static IList BuildList(List<XElement> elements, Type type)
+        
+        internal static IList BuildArray(List<XElement> elements, Type type)
         {
             Type listType = typeof(List<>).MakeGenericType(type);
 
@@ -252,85 +200,64 @@ namespace AppSettings.Client.Util
 
             if (elements.Count == 0) return list;
 
-            //该类型的属性
-            var Propertes = type.GetProperties();
-            //逐行解析
+            var propertes = type.GetProperties();
             foreach (XElement element in elements)
             {
-                var obj = BuildObj(type, Propertes, element);
+                var obj = BuildObj(element, type, propertes);
                 list.Add(obj);
             }
             return list;
         }
 
-        /// <summary>
-        /// 生成单个类型对象
-        /// </summary>
-        /// <param name="elements"></param>
-        /// <param name="type"></param>
-        /// <returns></returns>
         internal static object BuildObj(List<XElement> elements, Type type)
         {
-            if (elements.Count == 0) 
+            if (elements.Count == 0)
                 return null;
 
             var element = elements[0];
 
-            //该类型的属性
-            var Propertes = type.GetProperties();
-            var obj = BuildObj(type, Propertes, element);
+            var propertes = type.GetProperties();
+            var obj = BuildObj(element, type, propertes);
 
             return obj;
         }
-
-        /// <summary>
-        /// 生成单个类型对象
-        /// </summary>
-        /// <param name="type"></param>
-        /// <param name="Propertes"></param>
-        /// <param name="element"></param>
-        /// <returns></returns>
-        internal static object BuildObj(Type type, PropertyInfo[] Propertes, XElement element)
+        
+        internal static object BuildObj(XElement element, Type type, PropertyInfo[] propertes)
         {
-            //得到XML中的所有属性
+            var elements = element.Elements().ToList();
             var attributes = element.Attributes().ToList();
 
-            //创建实例
             var obj = type.Assembly.CreateInstance(type.FullName);
-
-            foreach (var current in Propertes)
+            foreach (var current in propertes)
             {
-                var propertyInfo = current;
-                var attribute = attributes.FirstOrDefault(s => s.Name.LocalName.EqualsIgnoreCase(propertyInfo.Name));
-
-                //如果是泛型（暂时仅仅实现复杂类型）
-                if (propertyInfo.PropertyType.IsGenericType && !IsBasicType(propertyInfo.PropertyType.GetGenericArguments()[0]))
+                if (current.PropertyType.IsGenericType && !IsBasicType(current.PropertyType.GetGenericArguments()[0]))
                 {
-                    //得到泛型的T的类型
-                    var type2 = propertyInfo.PropertyType.GetGenericArguments()[0];
-                    //得到T的对于的XML元素集合
-                    var elements2 = element.Elements().Where(s => s.Name.LocalName.EqualsIgnoreCase(type2.Name)).ToList();
-                    //构建集合
-                    var subList = BuildList(elements2, type2);
-                    //给属性设置值
-                    propertyInfo.SetValue(obj, subList, null);
+                    var typeSub = current.PropertyType.GetGenericArguments()[0];
+                    
+                    var elements2 = element.Elements().Where(s => s.Name.LocalName.EqualsIgnoreCase(typeSub.Name)).ToList();
+                    
+                    var listSub = BuildArray(elements2, typeSub);
+                    
+                    current.SetValue(obj, listSub, null);
                 }
-                //如果是自定义类型
-                else if (!propertyInfo.PropertyType.IsGenericType && !IsBasicType(propertyInfo.PropertyType))
+                else if (!current.PropertyType.IsGenericType && !IsBasicType(current.PropertyType))
                 {
-                    //得到T的对应的XML元素集合
-                    var elements2 = element.Elements().Where(s => s.Name.LocalName.EqualsIgnoreCase(propertyInfo.PropertyType.Name)).ToList();
-                    //构建对象
-                    var innerObj = BuildObj(elements2, propertyInfo.PropertyType);
-                    //给属性设置值
-                    propertyInfo.SetValue(obj, innerObj, null);
+                    var elements2 = elements.Where(s => s.Name.LocalName.EqualsIgnoreCase(current.PropertyType.Name)).ToList();
+                    
+                    var innerObj = BuildObj(elements2, current.PropertyType);
+                    
+                    current.SetValue(obj, innerObj, null);
                 }
                 else
                 {
-                    //简单类型的属性
-                    if (attribute != null)
+                    var eChild = elements.FirstOrDefault(s => s.Name.LocalName.EqualsIgnoreCase(current.Name));
+                    var attribute = attributes.FirstOrDefault(s => s.Name.LocalName.EqualsIgnoreCase(current.Name));
+
+                    if (eChild != null || attribute != null)
                     {
-                        propertyInfo.SetValue(obj, GetDefaultValue(attribute.Value, propertyInfo.PropertyType), null);
+                        var value = eChild != null ? eChild.Value : attribute.Value;
+
+                        current.SetValue(obj, GetDefaultValue(value, current.PropertyType), null);
                     }
                 }
             }

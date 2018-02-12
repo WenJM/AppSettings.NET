@@ -12,9 +12,9 @@
 3、同时确保自定义配置文件设置了对应的读取权限。<br />
 
 使用方法：<br />
-1、add键值类型的节点，直接通过Key获取值：SettingsManager.AppSettings["name"]<br />
-2、其他类型节点，可通过节点名称和属性名称获取属性值：SettingsManager.GetAttributesValue("Person", "Name")<br />
-3、和实体一致的节点，可直接传入实体类型获取对应的节点信息：SettingsManager.GetEntity\<Person>()<br />
+1、add键值类型的节点，直接通过Key获取值：AppSettingClient.AppSettings["name"]<br />
+2、其他类型节点，可通过节点名称和属性名称获取属性值：AppSettingClient.LoadValue("Person", "Name")<br />
+3、和实体一致的节点，可直接传入实体类型获取对应的节点信息：AppSettingClient<Person>.Load()<br />
 
 缓存补充说明：<br />
 1、如果需要把配置信息加载在缓存中，可以设置AppSettingConfig.IsLoadCache为true <br />

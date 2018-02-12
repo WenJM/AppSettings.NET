@@ -11,8 +11,6 @@ namespace AppSettings.Client.AppSettings
 {
     internal abstract class AppSettingsBase
     {
-        private string IsCachekey = "APPSETTINGSBASE_ISCACHE";
-
         protected abstract string Key { get;}
 
         protected string XmlPath
@@ -32,7 +30,7 @@ namespace AppSettings.Client.AppSettings
                 {
                     return filePath;
                 }
-                if (IsRemoteExist(filePath))
+                if (CheckUri(filePath))
                 {
                     return filePath;
                 }
@@ -40,13 +38,13 @@ namespace AppSettings.Client.AppSettings
             }
         }
 
-        protected abstract TSource GetAppSettings<TSource>(string xmlPath, string xmlSubPath) where TSource : class;
+        protected abstract TValue LoadConfigFromFile<TValue>(string xmlPath, string xmlSubPath) where TValue : class;
 
-        internal TSource LoadConfig<TSource>(string xmlSubPath) where TSource : class
+        internal TValue LoadConfig<TValue>(string xmlSubPath) where TValue : class
         {
             try
             {
-                var settings = GetAppSettings<TSource>(XmlPath, xmlSubPath);
+                var settings = LoadConfigFromFile<TValue>(XmlPath, xmlSubPath);
                 if (HttpRuntime.Cache[Key] != null)
                 {
                     HttpRuntime.Cache.Remove(Key);
@@ -65,16 +63,16 @@ namespace AppSettings.Client.AppSettings
             }
         }
 
-        private bool IsRemoteExist(string uri)
+        private bool CheckUri(string uri)
         {
-            HttpWebRequest req = null;
+            HttpWebRequest re = null;
             HttpWebResponse res = null;
             try
             {
-                req = (HttpWebRequest)WebRequest.Create(uri);
-                req.Method = "HEAD";
-                req.Timeout = 100;
-                res = (HttpWebResponse)req.GetResponse();
+                re = (HttpWebRequest)WebRequest.Create(uri);
+                re.Method = "HEAD";
+                re.Timeout = 100;
+                res = (HttpWebResponse)re.GetResponse();
                 return (res.StatusCode == HttpStatusCode.OK);
             }
             catch
@@ -88,10 +86,10 @@ namespace AppSettings.Client.AppSettings
                     res.Close();
                     res = null;
                 }
-                if (req != null)
+                if (re != null)
                 {
-                    req.Abort();
-                    req = null;
+                    re.Abort();
+                    re = null;
                 }
             }
         } 

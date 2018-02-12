@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppSettingClient`.cs" />
     <Compile Include="AppSettingConfig.cs" />
     <Compile Include="AppSettings\AppSettingsBase.cs" />
     <Compile Include="AppSettings\ClassSettings.cs" />

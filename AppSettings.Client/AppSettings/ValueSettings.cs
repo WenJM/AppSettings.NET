@@ -10,7 +10,7 @@ namespace AppSettings.Client.AppSettings
     {
         protected override string Key 
         {
-            get { return "APPSETTINGSLIST_DEFAULT"; }
+            get { return "APPSETTINGS_DEFAULT"; }
         }
 
         public NameValueCollection AppSettings
@@ -26,7 +26,7 @@ namespace AppSettings.Client.AppSettings
             }
         }
 
-        protected override TSource GetAppSettings<TSource>(string xmlPath, string xmlSubPath)
+        protected override TValue LoadConfigFromFile<TValue>(string xmlPath, string xmlSubPath)
         {
             var nv = new NameValueCollection();
 
@@ -48,7 +48,7 @@ namespace AppSettings.Client.AppSettings
                     }
                 }
             }
-            return nv as TSource;
+            return nv as TValue;
         }
     }
 }

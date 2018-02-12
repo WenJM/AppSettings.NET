@@ -10,10 +10,10 @@ namespace AppSettings.Client.AppSettings
     {
         protected override string Key
         {
-            get { return "APPSETTINGSLIST_XML"; }
+            get { return "APPSETTINGS_XML"; }
         }
 
-        public string GetAttributesValue(string name, string attributes)
+        public string LoadValue(string name, string attributes)
         {
             var settings = HttpRuntime.Cache.Get(Key) as List<XElement>;
             if (settings == null)
@@ -41,7 +41,7 @@ namespace AppSettings.Client.AppSettings
             return string.Empty;
         }
 
-        protected override TSource GetAppSettings<TSource>(string xmlPath, string xmlSubPath)
+        protected override TValue LoadConfigFromFile<TValue>(string xmlPath, string xmlSubPath)
         {
             var result = new List<XElement>();
 
@@ -61,7 +61,7 @@ namespace AppSettings.Client.AppSettings
                     settings.AddRange(subs);
                 }
             }
-            return settings as TSource;
+            return settings as TValue;
         }
     }
 }

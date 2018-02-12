@@ -2,4 +2,12 @@
 <AppSettings>
   <add key="zhangsan" value="age:18" />
   <Person Name="张三" Age="18" Height="185" />
+  <Orders>
+    <Order>
+      <Amount>15</Amount>
+      <Name>理财卷</Name>
+      <Code>SFR324234</Code>
+    </Order>
+    <Order Amount="17.00" Name="鼠标" Code="SFR544333" />
+  </Orders>
 </AppSettings>

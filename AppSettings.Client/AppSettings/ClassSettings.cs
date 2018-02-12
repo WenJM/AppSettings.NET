@@ -1,121 +1,83 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Web;
+using System.Linq;
 using System.Xml.Linq;
 using AppSettings.Client.Util;
 using AppSettings.Client.Extensions;
 
 namespace AppSettings.Client.AppSettings
 {
-    internal class ClassSettings<T> : AppSettingsBase
+    internal class ClassSettings<TSource> : AppSettingsBase where TSource:class
     {
         protected override string Key
         {
-            get { return "APPSETTINGSLIST_CLASS_" + ReflectionHelper.GetClassName<T>().ToUpper(); }
+            get
+            {
+                var tSource = typeof(TSource);
+
+                var className = !tSource.IsGenericType ?
+                    tSource.Name :
+                    tSource.GetGenericArguments().FirstOrDefault().Name.ToLower() + "_ARRAY";
+
+                return "APPSETTINGS_CLASS_" + className;
+            }
         }
 
-        public T GetEntity()
+        public TSource Load()
         {
-            return this.GetEntity(null);
+            return this.Load(null);
         }
 
-        public T GetEntity(string xmlSubPath)
+        public TSource Load(string xmlSubPath)
         {
-            var settings = HttpRuntime.Cache.Get(Key);
+            var settings = HttpRuntime.Cache.Get(Key) as TSource;
             if (settings == null)
             {
-                settings = LoadConfig<List<T>>(xmlSubPath);
-            }
-
-            var entitys = settings as List<T>;
-            if (entitys != null)
-            {
-                return entitys.FirstOrDefault();
-            }
-            return default(T);
-        }
-
-        public T GetEntity(Func<T, bool> predicate, string xmlSubPath = null)
-        {
-            var settings = HttpRuntime.Cache.Get(Key) as List<T>;
-            if (settings == null)
-            {
-                settings = LoadConfig<List<T>>(xmlSubPath);
-            }
-         
-            if (settings != null)
-            {
-                return settings.FirstOrDefault(predicate);
-            }
-            return default(T);
-        }
-
-        public List<T> GetEntitys()
-        {
-            return this.GetEntitys(string.Empty);
-        }
-
-        public List<T> GetEntitys(string xmlSubPath)
-        {
-            var settings = HttpRuntime.Cache.Get(Key) as List<T>;
-            if (settings == null)
-            {
-                settings = LoadConfig<List<T>>(xmlSubPath);
+                settings = LoadConfig<TSource>(xmlSubPath);
             }
             return settings;
         }
 
-        public List<T> GetEntitys(Func<T, bool> predicate)
+        protected override TValue LoadConfigFromFile<TValue>(string xmlPath, string xmlSubPath)
         {
-            return this.GetEntitys(predicate, null);
-        }
+            var tSoureType = typeof(TValue);
+            var tSubSourceType = tSoureType.GetGenericArguments().FirstOrDefault();
 
-        public List<T> GetEntitys(Func<T, bool> predicate, string xmlSubPath)
-        {
-            var settings = HttpRuntime.Cache.Get(Key) as List<T>;
-            if (settings == null)
-            {
-                settings = LoadConfig<List<T>>(xmlSubPath);
-            }
-            
-            if (settings != null)
-            {
-                return settings.Where(predicate).ToList();
-            }
-            return null;
-        }
-
-        protected override TSource GetAppSettings<TSource>(string xmlPath, string xmlSubPath)
-        {
+            //Todo 处理方式需要再考虑
             var doc = XDocument.Load(xmlPath);
-
-            var settings = doc.Elements().Where(s => s.Name.LocalName.EqualsIgnoreCase("AppSettings")).ToList();
+            var settings = doc.Elements().Where(s => s.Name.LocalName.EqualsIgnoreCase("AppSettings"));
             if (string.IsNullOrEmpty(xmlSubPath))
             {
-                settings = settings.Elements().Where(s =>
-                    s.Name.LocalName.EqualsIgnoreCase(ReflectionHelper.GetClassName<T>())).ToList();
+                settings = settings.Elements().Where(s => s.Name.LocalName.EqualsIgnoreCase(this.GenericName<TValue>()));
             }
             else
             {
                 var arr = xmlSubPath.Split('.');
                 foreach (var sub in arr)
                 {
-                    settings = settings.Elements().Where(s => s.Name.LocalName.EqualsIgnoreCase(sub)).ToList();
+                    settings = settings.Elements().Where(s => s.Name.LocalName.EqualsIgnoreCase(sub));
                 }
             }
-
-            var result = new List<T>();
-            if (settings.Count == 0) 
-                return result as TSource;
-
-            var Propertes = ReflectionHelper.GetPropertys<T>();
-            foreach (XElement element in settings)
+            if (!settings.Any())
             {
-                var obj = (T)ReflectionHelper.BuildObj(typeof(T), Propertes, element);
-                result.Add(obj);
+                return default(TValue);
             }
-            return result as TSource;
+            
+            if (tSoureType.IsGenericType)
+            {
+                return ReflectionHelper.BuildArray(settings.FirstOrDefault().Elements().ToList(), tSoureType.GetGenericArguments()[0]) as TValue;
+            }
+
+            return ReflectionHelper.BuildObj(settings.ToList(), tSoureType) as TValue;
+        }
+
+        private string GenericName<TValue>()
+        {
+            var tSource = typeof(TValue);
+            return !tSource.IsGenericType ?
+                tSource.Name :
+                tSource.GetGenericArguments().FirstOrDefault().Name;
         }
     }
 }

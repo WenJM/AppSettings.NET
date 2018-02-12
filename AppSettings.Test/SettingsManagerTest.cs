@@ -14,6 +14,15 @@ namespace AppSettings.Test
         public int Height { get; set; }
     }
 
+    public class Order
+    {
+        public decimal Amount { get; set; }
+
+        public string Name { get; set; }
+
+        public string Code { get; set; }
+    }
+
     [TestClass]
     public class SettingsManagerTest
     {
@@ -27,15 +36,25 @@ namespace AppSettings.Test
         [TestMethod]
         public void GetAttributesValue()
         {
-            var age = AppSettingClient.GetAttributesValue("person", "age");
+            var age = AppSettingClient.AttributesValue("person", "age");
             Assert.IsNotNull(age);
         }
 
         [TestMethod]
         public void GetEntity()
         {
-            var person = AppSettingClient.GetEntity<Person>();
+            var person = AppSettingClient<Person>.Load();
             Assert.IsNotNull(person);
+        }
+
+        [TestMethod]
+        public void GetEntitys()
+        {
+            var orders = AppSettingClient<List<Order>>.Load("Orders");
+
+            Assert.IsNotNull(orders);
+            Assert.IsTrue(orders.Any());
+            Assert.IsTrue(orders.Count == 2);
         }
     }
 }
