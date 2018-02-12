@@ -1,7 +1,9 @@
 ### AppSettings.NET
 
 提供对自定义应用程序配置文件的访问（支持深层节点）<br />
+
 1、必须在配置文件Web.config中的节点AppSettings添加自定义配置的物理路径，key="AppSettingsPath"。<br />
+
 2、自定义配置文件必须是以AppSettings节点开始。<br />
 例如：<br />
 <?xml version="1.0"?><br />
@@ -9,6 +11,7 @@
 	\<add key="name" value="zhangsan" /><br />
 	\<Person Name="张三" Age="18" Height="185" /><br />
 \</appSettings><br />
+
 3、同时确保自定义配置文件设置了对应的读取权限。<br />
 
 使用方法：<br />
