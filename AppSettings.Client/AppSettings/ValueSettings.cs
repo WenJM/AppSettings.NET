@@ -26,16 +26,13 @@ namespace AppSettings.Client.AppSettings
             }
         }
 
-        protected override TValue LoadConfigFromFile<TValue>(string xmlPath, string xmlSubPath)
+        protected override TValue LoadConfigFromFile<TValue>(string parentFull)
         {
             var nv = new NameValueCollection();
 
-            var doc = XDocument.Load(xmlPath);
+            var elements = this.AppSettingElement(parentFull);
 
-            var settings = doc.Elements().FirstOrDefault(s => s.Name.LocalName.EqualsIgnoreCase("AppSettings"));
-
-            var adds = settings.Elements().Where(s => s.Name.LocalName.EqualsIgnoreCase("add")).ToList();
-
+            var adds = elements.Where(s => s.Name.LocalName.EqualsIgnoreCase("add")).ToList();
             foreach (XElement x in adds)
             {
                 var key = x.Attributes().FirstOrDefault(s => s.Name.LocalName.EqualsIgnoreCase("key"));

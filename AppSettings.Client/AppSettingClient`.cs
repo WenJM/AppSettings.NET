@@ -15,17 +15,22 @@ namespace AppSettings.Client
 
         public static TSource Load()
         {
-            return Load(string.Empty);
+            return Load(null);
         }
 
-        public static TSource Load(string xmlSubPath)
+        public static TSource Load(string parentFull)
         {
-            return _classSettings.Load(xmlSubPath);
+            return _classSettings.Load(parentFull);
         }
 
         public static void InitSettingCache()
         {
-            _classSettings.LoadConfig<TSource>(null);
+            InitSettingCache(null);
+        }
+
+        public static void InitSettingCache(string parentFull)
+        {
+            _classSettings.LoadConfig<TSource>(parentFull);
         }
     }
 }

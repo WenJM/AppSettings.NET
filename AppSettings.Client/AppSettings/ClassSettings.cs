@@ -17,8 +17,8 @@ namespace AppSettings.Client.AppSettings
                 var tSource = typeof(TSource);
 
                 var className = !tSource.IsGenericType ?
-                    tSource.Name :
-                    tSource.GetGenericArguments().FirstOrDefault().Name.ToLower() + "_ARRAY";
+                    tSource.Name.ToUpper() :
+                    tSource.GetGenericArguments().FirstOrDefault().Name.ToUpper() + "_ARRAY";
 
                 return "APPSETTINGS_CLASS_" + className;
             }
@@ -29,47 +29,33 @@ namespace AppSettings.Client.AppSettings
             return this.Load(null);
         }
 
-        public TSource Load(string xmlSubPath)
+        public TSource Load(string parentFull)
         {
             var settings = HttpRuntime.Cache.Get(Key) as TSource;
             if (settings == null)
             {
-                settings = LoadConfig<TSource>(xmlSubPath);
+                settings = LoadConfig<TSource>(parentFull);
             }
             return settings;
         }
 
-        protected override TValue LoadConfigFromFile<TValue>(string xmlPath, string xmlSubPath)
+        protected override TValue LoadConfigFromFile<TValue>(string parentFull)
         {
             var tSoureType = typeof(TValue);
-            var tSubSourceType = tSoureType.GetGenericArguments().FirstOrDefault();
 
-            //Todo 处理方式需要再考虑
-            var doc = XDocument.Load(xmlPath);
-            var settings = doc.Elements().Where(s => s.Name.LocalName.EqualsIgnoreCase("AppSettings"));
-            if (string.IsNullOrEmpty(xmlSubPath))
-            {
-                settings = settings.Elements().Where(s => s.Name.LocalName.EqualsIgnoreCase(this.GenericName<TValue>()));
-            }
-            else
-            {
-                var arr = xmlSubPath.Split('.');
-                foreach (var sub in arr)
-                {
-                    settings = settings.Elements().Where(s => s.Name.LocalName.EqualsIgnoreCase(sub));
-                }
-            }
-            if (!settings.Any())
+            var className = this.GenericName<TValue>();
+            var elements = this.AppSettingElement(parentFull).Where(s => s.Name.LocalName.EqualsIgnoreCase(this.GenericName<TValue>()));
+            if (!elements.Any())
             {
                 return default(TValue);
             }
             
             if (tSoureType.IsGenericType)
             {
-                return ReflectionHelper.BuildArray(settings.FirstOrDefault().Elements().ToList(), tSoureType.GetGenericArguments()[0]) as TValue;
+                return ReflectionHelper.BuildArray(elements.ToList(), tSoureType.GetGenericArguments()[0]) as TValue;
             }
 
-            return ReflectionHelper.BuildObj(settings.ToList(), tSoureType) as TValue;
+            return ReflectionHelper.BuildObj(elements.ToList(), tSoureType) as TValue;
         }
 
         private string GenericName<TValue>()

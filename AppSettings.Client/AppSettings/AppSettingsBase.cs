@@ -1,11 +1,13 @@
 ﻿using System;
-using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Configuration;
+using System.Collections.Generic;
 using System.Net;
 using System.Web;
 using System.Web.Caching;
 using System.Xml.Linq;
+using AppSettings.Client.Extensions;
 
 namespace AppSettings.Client.AppSettings
 {
@@ -38,13 +40,26 @@ namespace AppSettings.Client.AppSettings
             }
         }
 
-        protected abstract TValue LoadConfigFromFile<TValue>(string xmlPath, string xmlSubPath) where TValue : class;
+        protected IEnumerable<XElement> AppSettingElement(string parentFull)
+        {
+            var elements = XDocument.Load(XmlPath).Elements().Where(s => s.Name.LocalName.EqualsIgnoreCase("AppSettings")).Elements();
+            if (!string.IsNullOrEmpty(parentFull))
+            {
+                parentFull.Split('.','\\','/').ToList().ForEach(x =>
+                {
+                    elements = elements.Where(s => s.Name.LocalName.EqualsIgnoreCase(x)).Elements();
+                });
+            }
+            return elements;
+        }
 
-        internal TValue LoadConfig<TValue>(string xmlSubPath) where TValue : class
+        protected abstract TValue LoadConfigFromFile<TValue>(string parentFull) where TValue : class;
+
+        internal TValue LoadConfig<TValue>(string parentFull) where TValue : class
         {
             try
             {
-                var settings = LoadConfigFromFile<TValue>(XmlPath, xmlSubPath);
+                var settings = LoadConfigFromFile<TValue>(parentFull);
                 if (HttpRuntime.Cache[Key] != null)
                 {
                     HttpRuntime.Cache.Remove(Key);
