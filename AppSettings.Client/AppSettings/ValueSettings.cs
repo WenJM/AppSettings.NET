@@ -1,7 +1,9 @@
-﻿using System.Collections.Specialized;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
-using System.Web;
 using System.Xml.Linq;
+using System.Web;
 using AppSettings.Client.Extensions;
 
 namespace AppSettings.Client.AppSettings
@@ -29,11 +31,9 @@ namespace AppSettings.Client.AppSettings
         protected override TValue LoadConfigFromFile<TValue>(string parentFull)
         {
             var nv = new NameValueCollection();
-
             var elements = this.AppSettingElement(parentFull);
-
-            var adds = elements.Where(s => s.Name.LocalName.EqualsIgnoreCase("add")).ToList();
-            foreach (XElement x in adds)
+            var adds = elements.Where(s => s.Name.LocalName.EqualsIgnoreCase("add"));
+            foreach (var x in adds)
             {
                 var key = x.Attributes().FirstOrDefault(s => s.Name.LocalName.EqualsIgnoreCase("key"));
                 var value = x.Attributes().FirstOrDefault(s => s.Name.LocalName.EqualsIgnoreCase("value"));

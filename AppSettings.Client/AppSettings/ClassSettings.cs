@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Web;
 using System.Linq;
 using System.Xml.Linq;
-using AppSettings.Client.Util;
+using AppSettings.Client.Helper;
 using AppSettings.Client.Extensions;
 
 namespace AppSettings.Client.AppSettings

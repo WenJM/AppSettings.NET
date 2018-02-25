@@ -49,9 +49,11 @@
     <Compile Include="AppSettingClient.cs" />
     <Compile Include="AppSettings\ValueSettings.cs" />
     <Compile Include="AppSettings\XmlSettings.cs" />
-    <Compile Include="Util\ReflectionHelper.cs" />
+    <Compile Include="Helper\ReflectionHelper.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utility\Utils.cs" />
+    <Compile Include="Utility\UtilConstants.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

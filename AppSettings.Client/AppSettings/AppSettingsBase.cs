@@ -13,9 +13,13 @@ namespace AppSettings.Client.AppSettings
 {
     internal abstract class AppSettingsBase
     {
+        private const string XmlCacheKey = "XMLCACHEKEY";
+
+        private bool IsRemoteFile = false; //远程文件
+
         protected abstract string Key { get;}
 
-        protected string XmlPath
+        protected string AppSettingsPath
         {
             get
             {
@@ -34,6 +38,8 @@ namespace AppSettings.Client.AppSettings
                 }
                 if (CheckUri(filePath))
                 {
+                    IsRemoteFile = true;
+
                     return filePath;
                 }
                 throw new ConfigurationErrorsException("自定义配置文件不存在");
@@ -42,7 +48,17 @@ namespace AppSettings.Client.AppSettings
 
         protected IEnumerable<XElement> AppSettingElement(string parentFull)
         {
-            var elements = XDocument.Load(XmlPath).Elements().Where(s => s.Name.LocalName.EqualsIgnoreCase("AppSettings")).Elements();
+            var elements = HttpRuntime.Cache[XmlCacheKey] as IEnumerable<XElement>;
+            if (elements == null)
+            {
+                elements = XDocument.Load(AppSettingsPath).Elements().Where(s => s.Name.LocalName.EqualsIgnoreCase("AppSettings")).Elements();
+                if (elements != null)
+                {
+                    var cdd = new CacheDependency(AppSettingsPath);
+                    HttpRuntime.Cache.Insert(XmlCacheKey, elements, cdd, DateTime.MaxValue, Cache.NoSlidingExpiration);
+                }
+            }
+
             if (!string.IsNullOrEmpty(parentFull))
             {
                 parentFull.Split('.','\\','/').ToList().ForEach(x =>
@@ -64,10 +80,9 @@ namespace AppSettings.Client.AppSettings
                 {
                     HttpRuntime.Cache.Remove(Key);
                 }
-
-                if (AppSettingConfig.IsLoadCache && File.Exists(XmlPath) && settings != null)
+                if (AppSettingConfig.IsLoadCache && !IsRemoteFile && settings != null)
                 {
-                    var cdd = new CacheDependency(XmlPath);
+                    var cdd = new CacheDependency(AppSettingsPath);
                     HttpRuntime.Cache.Insert(Key, settings, cdd, DateTime.MaxValue, Cache.NoSlidingExpiration);
                 }
                 return settings;
