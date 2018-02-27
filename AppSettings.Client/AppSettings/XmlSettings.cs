@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Xml.Linq;
+using AppSettings.Client.Helper;
 using AppSettings.Client.Extensions;
 
 namespace AppSettings.Client.AppSettings
@@ -15,7 +15,7 @@ namespace AppSettings.Client.AppSettings
 
         public string LoadValue(string name, string attributes)
         {
-            var settings = HttpRuntime.Cache.Get(Key) as List<XElement>;
+            var settings = CacheHelper.Get<List<XElement>>(Key);
             if (settings == null)
             {
                 settings = LoadConfig<List<XElement>>(null);

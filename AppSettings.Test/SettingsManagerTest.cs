@@ -31,14 +31,14 @@ namespace AppSettings.Test
         public void GetValueByKey()
         {
             var zhangsan = AppSettingClient.AppSettings["zhangsan"];
-            Assert.IsNotNull(zhangsan);
+            Assert.IsFalse(string.IsNullOrEmpty(zhangsan));
         }
 
         [TestMethod]
         public void GetAttributesValue()
         {
             var age = AppSettingClient.AttributesValue("person", "age");
-            Assert.IsNotNull(age);
+            Assert.IsFalse(string.IsNullOrEmpty(age));
         }
 
         [TestMethod]
@@ -46,6 +46,9 @@ namespace AppSettings.Test
         {
             var person = AppSettingClient<Person>.Load();
             Assert.IsNotNull(person);
+            Assert.IsFalse(string.IsNullOrEmpty(person.Name));
+            Assert.IsFalse(person.Age == 0);
+            Assert.IsFalse(person.Height == 0);
         }
 
         [TestMethod]
@@ -56,12 +59,15 @@ namespace AppSettings.Test
             Assert.IsNotNull(orders);
             Assert.IsTrue(orders.Any());
             Assert.IsTrue(orders.Count == 2);
+            Assert.IsFalse(orders.Any(s => string.IsNullOrEmpty(s.Name)));
+            Assert.IsFalse(orders.Any(s => string.IsNullOrEmpty(s.Code)));
+            Assert.IsFalse(orders.Any(s => s.Amount == 0));
         }
 
         [TestMethod]
         public void RunTest()
         {
-            AppSettingConfig.IsLoadCache = false; //缓存配置
+            AppSettingConfig.IsLoadCache = true; //缓存配置
 
             RunStart.Run("系统配置读取",100000, (i)=>
             {

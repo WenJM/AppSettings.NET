@@ -1,26 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Web;
 using System.Linq;
-using System.Xml.Linq;
 using AppSettings.Client.Helper;
 using AppSettings.Client.Extensions;
 
 namespace AppSettings.Client.AppSettings
 {
-    internal class ClassSettings<TSource> : AppSettingsBase where TSource:class
+    internal class ClassSettings<TSource> : AppSettingsBase where TSource : class
     {
         protected override string Key
         {
             get
             {
-                var tSource = typeof(TSource);
-
-                var className = !tSource.IsGenericType ?
-                    tSource.Name.ToUpper() :
-                    tSource.GetGenericArguments().FirstOrDefault().Name.ToUpper() + "_ARRAY";
-
-                return "APPSETTINGS_CLASS_" + className;
+                return $"APPSETTINGS_CLASS_{ReflectionHelper.GetRealName<TSource>().ToUpper()}_ARRAY";
             }
         }
 
@@ -31,7 +23,7 @@ namespace AppSettings.Client.AppSettings
 
         public TSource Load(string parentFull)
         {
-            var settings = HttpRuntime.Cache.Get(Key) as TSource;
+            var settings = CacheHelper.Get<TSource>(Key);
             if (settings == null)
             {
                 settings = LoadConfig<TSource>(parentFull);
@@ -41,29 +33,20 @@ namespace AppSettings.Client.AppSettings
 
         protected override TValue LoadConfigFromFile<TValue>(string parentFull)
         {
-            var tSoureType = typeof(TValue);
-
-            var className = this.GenericName<TValue>();
-            var elements = this.AppSettingElement(parentFull).Where(s => s.Name.LocalName.EqualsIgnoreCase(this.GenericName<TValue>()));
+            var className = ReflectionHelper.GetRealName<TValue>();
+            var elements = this.AppSettingElement(parentFull).Where(s => s.Name.LocalName.EqualsIgnoreCase(className));
             if (!elements.Any())
             {
                 return default(TValue);
             }
-            
+
+            var tSoureType = typeof(TValue);
             if (tSoureType.IsGenericType)
             {
-                return ReflectionHelper.BuildArray(elements.ToList(), tSoureType.GetGenericArguments()[0]) as TValue;
+                return ReflectionHelper.BuildArray(elements.ToList(), tSoureType.GetGenericArguments().FirstOrDefault()) as TValue;
             }
 
             return ReflectionHelper.BuildObj(elements.ToList(), tSoureType) as TValue;
-        }
-
-        private string GenericName<TValue>()
-        {
-            var tSource = typeof(TValue);
-            return !tSource.IsGenericType ?
-                tSource.Name :
-                tSource.GetGenericArguments().FirstOrDefault().Name;
         }
     }
 }

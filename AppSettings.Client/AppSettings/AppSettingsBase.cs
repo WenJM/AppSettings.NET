@@ -3,10 +3,9 @@ using System.IO;
 using System.Linq;
 using System.Configuration;
 using System.Collections.Generic;
-using System.Net;
-using System.Web;
-using System.Web.Caching;
 using System.Xml.Linq;
+using AppSettings.Client.Helper;
+using AppSettings.Client.Utility;
 using AppSettings.Client.Extensions;
 
 namespace AppSettings.Client.AppSettings
@@ -36,7 +35,7 @@ namespace AppSettings.Client.AppSettings
                 {
                     return filePath;
                 }
-                if (CheckUri(filePath))
+                if (Utils.CheckUri(filePath))
                 {
                     IsRemoteFile = true;
 
@@ -48,14 +47,16 @@ namespace AppSettings.Client.AppSettings
 
         protected IEnumerable<XElement> AppSettingElement(string parentFull)
         {
-            var elements = HttpRuntime.Cache[XmlCacheKey] as IEnumerable<XElement>;
+            var elements = CacheHelper.Get<IEnumerable<XElement>>(XmlCacheKey);
             if (elements == null)
             {
                 elements = XDocument.Load(AppSettingsPath).Elements().Where(s => s.Name.LocalName.EqualsIgnoreCase("AppSettings")).Elements();
                 if (elements != null)
                 {
-                    var cdd = new CacheDependency(AppSettingsPath);
-                    HttpRuntime.Cache.Insert(XmlCacheKey, elements, cdd, DateTime.MaxValue, Cache.NoSlidingExpiration);
+                    if (IsRemoteFile)
+                        CacheHelper.Set(XmlCacheKey, elements);
+                    else
+                        CacheHelper.Set(XmlCacheKey, elements, CacheHelper.CreateMonitor(AppSettingsPath));
                 }
             }
 
@@ -76,14 +77,12 @@ namespace AppSettings.Client.AppSettings
             try
             {
                 var settings = LoadConfigFromFile<TValue>(parentFull);
-                if (HttpRuntime.Cache[Key] != null)
+                if (AppSettingConfig.IsLoadCache && settings != null)
                 {
-                    HttpRuntime.Cache.Remove(Key);
-                }
-                if (AppSettingConfig.IsLoadCache && !IsRemoteFile && settings != null)
-                {
-                    var cdd = new CacheDependency(AppSettingsPath);
-                    HttpRuntime.Cache.Insert(Key, settings, cdd, DateTime.MaxValue, Cache.NoSlidingExpiration);
+                    if (IsRemoteFile)
+                        CacheHelper.Set(Key, settings);
+                    else
+                        CacheHelper.Set(Key, settings, CacheHelper.CreateMonitor(AppSettingsPath));
                 }
                 return settings;
             }
@@ -92,36 +91,5 @@ namespace AppSettings.Client.AppSettings
                 throw new ConfigurationErrorsException(ex.Message);
             }
         }
-
-        private bool CheckUri(string uri)
-        {
-            HttpWebRequest re = null;
-            HttpWebResponse res = null;
-            try
-            {
-                re = (HttpWebRequest)WebRequest.Create(uri);
-                re.Method = "HEAD";
-                re.Timeout = 100;
-                res = (HttpWebResponse)re.GetResponse();
-                return (res.StatusCode == HttpStatusCode.OK);
-            }
-            catch
-            {
-                return false;
-            }
-            finally
-            {
-                if (res != null)
-                {
-                    res.Close();
-                    res = null;
-                }
-                if (re != null)
-                {
-                    re.Abort();
-                    re = null;
-                }
-            }
-        } 
     }
 }

@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Xml.Linq;
-using System.Web;
+using AppSettings.Client.Helper;
 using AppSettings.Client.Extensions;
 
 namespace AppSettings.Client.AppSettings
@@ -19,7 +18,7 @@ namespace AppSettings.Client.AppSettings
         {
             get
             {
-                var settings = HttpRuntime.Cache.Get(Key) as NameValueCollection;
+                var settings = CacheHelper.Get<NameValueCollection>(Key);
                 if (settings == null)
                 {
                     settings = LoadConfig<NameValueCollection>(null);

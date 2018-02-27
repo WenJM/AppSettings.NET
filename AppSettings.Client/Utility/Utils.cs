@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 
 namespace AppSettings.Client.Utility
 {
-    static class Util
+    static class Utils
     {
         static List<Type> MapBasicType; //基础类型
         static List<Type> MapNullableType;//可空类型
         static Dictionary<Type, Func<IConvertible, IFormatProvider, object, object>> dicConvert; //类型转换
 
-        static Util()
+        static Utils()
         {
             //基础类型
             MapBasicType = new List<Type>();
@@ -97,6 +98,37 @@ namespace AppSettings.Client.Utility
             Func<IConvertible, IFormatProvider, object, object> func;
 
             return dicConvert.TryGetValue(type, out func) ? func : null;
+        }
+
+        public static bool CheckUri(string uri)
+        {
+            HttpWebRequest re = null;
+            HttpWebResponse res = null;
+            try
+            {
+                re = (HttpWebRequest)WebRequest.Create(uri);
+                re.Method = "HEAD";
+                re.Timeout = 100;
+                res = (HttpWebResponse)re.GetResponse();
+                return (res.StatusCode == HttpStatusCode.OK);
+            }
+            catch
+            {
+                return false;
+            }
+            finally
+            {
+                if (res != null)
+                {
+                    res.Close();
+                    res = null;
+                }
+                if (re != null)
+                {
+                    re.Abort();
+                    re = null;
+                }
+            }
         }
     }
 }

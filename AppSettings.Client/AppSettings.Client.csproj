@@ -34,7 +34,7 @@
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Web" />
+    <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -49,6 +49,7 @@
     <Compile Include="AppSettingClient.cs" />
     <Compile Include="AppSettings\ValueSettings.cs" />
     <Compile Include="AppSettings\XmlSettings.cs" />
+    <Compile Include="Helper\CacheHelper.cs" />
     <Compile Include="Helper\ReflectionHelper.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -12,8 +12,16 @@ namespace AppSettings.Client.Helper
     /// <summary>
     /// 反射帮助类
     /// </summary>
-    static class ReflectionHelper
+    public static class ReflectionHelper
     {
+        public static string GetRealName<TSource>()
+        {
+            var tSource = typeof(TSource);
+            return !tSource.IsGenericType ?
+                    tSource.Name :
+                    tSource.GetGenericArguments().FirstOrDefault().Name;
+        }
+
         public static object GetDefaultValue(object value, Type type)
         {
             try
@@ -33,7 +41,7 @@ namespace AppSettings.Client.Helper
             {
                 throw new ArgumentNullException("convertType is null");
             }
-            if (convertType.IsValueType && !Util.IsNullable(convertType) && value == null)
+            if (convertType.IsValueType && !Utils.IsNullable(convertType) && value == null)
             {
                 throw new InvalidCastException("vauleType is null");
             }
@@ -56,7 +64,7 @@ namespace AppSettings.Client.Helper
                     return false;
             }
 
-            var func = Util.TryGetConvertFunc(convertType);
+            var func = Utils.TryGetConvertFunc(convertType);
             if (func != null)
             {
                 return func(convertible, provider, value);
@@ -103,7 +111,7 @@ namespace AppSettings.Client.Helper
             var obj = buildType.Assembly.CreateInstance(buildType.FullName);
             foreach (var current in propertes)
             {
-                if (current.PropertyType.IsGenericType && !Util.IsBasic(current.PropertyType.GetGenericArguments()[0]))
+                if (current.PropertyType.IsGenericType && !Utils.IsBasic(current.PropertyType.GetGenericArguments()[0]))
                 {
                     var typeSub = current.PropertyType.GetGenericArguments()[0];
                     
@@ -113,7 +121,7 @@ namespace AppSettings.Client.Helper
                     
                     current.SetValue(obj, listSub, null);
                 }
-                else if (!current.PropertyType.IsGenericType && !Util.IsBasic(current.PropertyType))
+                else if (!current.PropertyType.IsGenericType && !Utils.IsBasic(current.PropertyType))
                 {
                     var elementsSub = elements.Where(s => s.Name.LocalName.EqualsIgnoreCase(current.PropertyType.Name)).ToList();
                     

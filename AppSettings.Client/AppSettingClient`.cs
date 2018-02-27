@@ -15,7 +15,7 @@ namespace AppSettings.Client
 
         public static TSource Load()
         {
-            return Load(null);
+            return _classSettings.Load();
         }
 
         public static TSource Load(string parentFull)
