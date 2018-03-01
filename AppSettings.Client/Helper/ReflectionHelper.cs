@@ -16,61 +16,7 @@ namespace AppSettings.Client.Helper
     {
         public static string GetRealName<TSource>()
         {
-            var tSource = typeof(TSource);
-            return !tSource.IsGenericType ?
-                    tSource.Name :
-                    tSource.GetGenericArguments().FirstOrDefault().Name;
-        }
-
-        public static object GetDefaultValue(object value, Type type)
-        {
-            try
-            {
-                value = ConvertValue(value, type, null);
-            }
-            catch (Exception)
-            {
-                value = default(object);
-            }
-            return value;
-        }
-
-        public static object ConvertValue(object value, Type convertType, IFormatProvider provider)
-        {
-            if (convertType == null)
-            {
-                throw new ArgumentNullException("convertType is null");
-            }
-            if (convertType.IsValueType && !Utils.IsNullable(convertType) && value == null)
-            {
-                throw new InvalidCastException("vauleType is null");
-            }
-            if (value == null | value.ToString().Length == 0)
-            {
-                return null;
-            }
-
-            var convertible = value as IConvertible;
-            if (convertible == null)
-            {
-                return value;
-            }
-
-            if (convertType == UtilConstants.TypeOfBoolean || convertType == UtilConstants.TypeOfBoolean_Nullable)
-            {
-                if (value.ToString().Equals("1"))
-                    return true;
-                if (value.ToString().Equals("0"))
-                    return false;
-            }
-
-            var func = Utils.TryGetConvertFunc(convertType);
-            if (func != null)
-            {
-                return func(convertible, provider, value);
-            }
-
-            return value;
+            return typeof(TSource).GetRealName();
         }
 
         public static IList BuildArray(List<XElement> elements, Type buildType)
@@ -111,9 +57,9 @@ namespace AppSettings.Client.Helper
             var obj = buildType.Assembly.CreateInstance(buildType.FullName);
             foreach (var current in propertes)
             {
-                if (current.PropertyType.IsGenericType && !Utils.IsBasic(current.PropertyType.GetGenericArguments()[0]))
+                if (current.PropertyType.IsGenericType && !Utils.IsBasic(current.PropertyType.GetGenericArguments().FirstOrDefault()))
                 {
-                    var typeSub = current.PropertyType.GetGenericArguments()[0];
+                    var typeSub = current.PropertyType.GetGenericArguments().FirstOrDefault();
                     
                     var elementsSub = elements.Where(s => s.Name.LocalName.EqualsIgnoreCase(typeSub.Name)).ToList();
                     
@@ -138,7 +84,7 @@ namespace AppSettings.Client.Helper
                     {
                         var value = elementCurrent != null ? elementCurrent.Value : attribute.Value;
 
-                        current.SetValue(obj, GetDefaultValue(value, current.PropertyType), null);
+                        current.SetValue(obj, current.PropertyType.GetDefaultValue(value), null);
                     }
                 }
             }

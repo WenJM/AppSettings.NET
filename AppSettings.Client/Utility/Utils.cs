@@ -10,7 +10,7 @@ namespace AppSettings.Client.Utility
     {
         static List<Type> MapBasicType; //基础类型
         static List<Type> MapNullableType;//可空类型
-        static Dictionary<Type, Func<IConvertible, IFormatProvider, object, object>> dicConvert; //类型转换
+        static Dictionary<Type, Func<IConvertible,  object, IFormatProvider, object>> dicConvert; //类型转换
 
         static Utils()
         {
@@ -50,37 +50,37 @@ namespace AppSettings.Client.Utility
             MapNullableType.Add(UtilConstants.TypeOfUInt64_Nullable);
 
             //类型转换
-            dicConvert = new Dictionary<Type, Func<IConvertible, IFormatProvider, object, object>>();
-            dicConvert.Add(UtilConstants.TypeOfObject, (c, p, o) => o);
-            dicConvert.Add(UtilConstants.TypeOfString, (c, p, o) => c.ToString(p));
-            dicConvert.Add(UtilConstants.TypeOfBoolean, (c, p, o) => c.ToBoolean(p));
-            dicConvert.Add(UtilConstants.TypeOfBoolean_Nullable, (c, p, o) => c.ToBoolean(p));
-            dicConvert.Add(UtilConstants.TypeOfChar, (c, p, o) => c.ToChar(p));
-            dicConvert.Add(UtilConstants.TypeOfChar_Nullable, (c, p, o) => c.ToChar(p));
-            dicConvert.Add(UtilConstants.TypeOfByte, (c, p, o) => c.ToSByte(p));
-            dicConvert.Add(UtilConstants.TypeOfByte_Nullable, (c, p, o) => c.ToSByte(p));
-            dicConvert.Add(UtilConstants.TypeOfSbyte, (c, p, o) => c.ToSByte(p));
-            dicConvert.Add(UtilConstants.TypeOfSbyte_Nullable, (c, p, o) => c.ToSByte(p));
-            dicConvert.Add(UtilConstants.TypeOfSingle, (c, p, o) => c.ToSingle(p));
-            dicConvert.Add(UtilConstants.TypeOfSingle_Nullable, (c, p, o) => c.ToSingle(p));
-            dicConvert.Add(UtilConstants.TypeOfDouble, (c, p, o) => c.ToDouble(p));
-            dicConvert.Add(UtilConstants.TypeOfDouble_Nullable, (c, p, o) => c.ToDouble(p));
-            dicConvert.Add(UtilConstants.TypeOfDecimal, (c, p, o) => c.ToDecimal(p));
-            dicConvert.Add(UtilConstants.TypeOfDecimal_Nullable, (c, p, o) => c.ToDecimal(p));
-            dicConvert.Add(UtilConstants.TypeOfDateTime, (c, p, o) => c.ToDateTime(p));
-            dicConvert.Add(UtilConstants.TypeOfDateTime_Nullable, (c, p, o) => c.ToDateTime(p));
-            dicConvert.Add(UtilConstants.TypeOfShort, (c, p, o) => c.ToInt16(p));
-            dicConvert.Add(UtilConstants.TypeOfShort_Nullable, (c, p, o) => c.ToInt16(p));
-            dicConvert.Add(UtilConstants.TypeOfInt32, (c, p, o) => c.ToInt32(p));
-            dicConvert.Add(UtilConstants.TypeOfInt32_Nullable, (c, p, o) => c.ToInt32(p));
-            dicConvert.Add(UtilConstants.TypeOfInt64, (c, p, o) => c.ToInt64(p));
-            dicConvert.Add(UtilConstants.TypeOfInt64_Nullable, (c, p, o) => c.ToInt64(p));
-            dicConvert.Add(UtilConstants.TypeOfUShort, (c, p, o) => c.ToUInt16(p));
-            dicConvert.Add(UtilConstants.TypeOfUShort_Nullable, (c, p, o) => c.ToUInt16(p));
-            dicConvert.Add(UtilConstants.TypeOfUInt32, (c, p, o) => c.ToUInt32(p));
-            dicConvert.Add(UtilConstants.TypeOfUInt32_Nullable, (c, p, o) => c.ToUInt32(p));
-            dicConvert.Add(UtilConstants.TypeOfUInt64, (c, p, o) => c.ToUInt64(p));
-            dicConvert.Add(UtilConstants.TypeOfUInt64_Nullable, (c, p, o) => c.ToUInt64(p));
+            dicConvert = new Dictionary<Type, Func<IConvertible, object, IFormatProvider, object>>();
+            dicConvert.Add(UtilConstants.TypeOfObject, (c, o, p) => o);
+            dicConvert.Add(UtilConstants.TypeOfString, (c, o, p) => c.ToString(p));
+            dicConvert.Add(UtilConstants.TypeOfBoolean, (c, o, p) => c.ToBoolean(p));
+            dicConvert.Add(UtilConstants.TypeOfBoolean_Nullable, (c, o, p) => c.ToBoolean(p));
+            dicConvert.Add(UtilConstants.TypeOfChar, (c, o, p) => c.ToChar(p));
+            dicConvert.Add(UtilConstants.TypeOfChar_Nullable, (c, o, p) => c.ToChar(p));
+            dicConvert.Add(UtilConstants.TypeOfByte, (c, o, p) => c.ToSByte(p));
+            dicConvert.Add(UtilConstants.TypeOfByte_Nullable, (c, o, p) => c.ToSByte(p));
+            dicConvert.Add(UtilConstants.TypeOfSbyte, (c, o, p) => c.ToSByte(p));
+            dicConvert.Add(UtilConstants.TypeOfSbyte_Nullable, (c, o, p) => c.ToSByte(p));
+            dicConvert.Add(UtilConstants.TypeOfSingle, (c, o, p) => c.ToSingle(p));
+            dicConvert.Add(UtilConstants.TypeOfSingle_Nullable, (c, o, p) => c.ToSingle(p));
+            dicConvert.Add(UtilConstants.TypeOfDouble, (c, o, p) => c.ToDouble(p));
+            dicConvert.Add(UtilConstants.TypeOfDouble_Nullable, (c, o, p) => c.ToDouble(p));
+            dicConvert.Add(UtilConstants.TypeOfDecimal, (c, o, p) => c.ToDecimal(p));
+            dicConvert.Add(UtilConstants.TypeOfDecimal_Nullable, (c, o, p) => c.ToDecimal(p));
+            dicConvert.Add(UtilConstants.TypeOfDateTime, (c, o, p) => c.ToDateTime(p));
+            dicConvert.Add(UtilConstants.TypeOfDateTime_Nullable, (c, o, p) => c.ToDateTime(p));
+            dicConvert.Add(UtilConstants.TypeOfShort, (c, o, p) => c.ToInt16(p));
+            dicConvert.Add(UtilConstants.TypeOfShort_Nullable, (c, o, p) => c.ToInt16(p));
+            dicConvert.Add(UtilConstants.TypeOfInt32, (c, o, p) => c.ToInt32(p));
+            dicConvert.Add(UtilConstants.TypeOfInt32_Nullable, (c, o, p) => c.ToInt32(p));
+            dicConvert.Add(UtilConstants.TypeOfInt64, (c, o, p) => c.ToInt64(p));
+            dicConvert.Add(UtilConstants.TypeOfInt64_Nullable, (c, o, p) => c.ToInt64(p));
+            dicConvert.Add(UtilConstants.TypeOfUShort, (c, o, p) => c.ToUInt16(p));
+            dicConvert.Add(UtilConstants.TypeOfUShort_Nullable, (c, o, p) => c.ToUInt16(p));
+            dicConvert.Add(UtilConstants.TypeOfUInt32, (c, o, p) => c.ToUInt32(p));
+            dicConvert.Add(UtilConstants.TypeOfUInt32_Nullable, (c, o, p) => c.ToUInt32(p));
+            dicConvert.Add(UtilConstants.TypeOfUInt64, (c, o, p) => c.ToUInt64(p));
+            dicConvert.Add(UtilConstants.TypeOfUInt64_Nullable, (c, o, p) => c.ToUInt64(p));
         }
 
         public static bool IsBasic(Type type)
@@ -93,9 +93,9 @@ namespace AppSettings.Client.Utility
             return MapNullableType.Contains(type);
         }
 
-        public static Func<IConvertible, IFormatProvider, object, object> TryGetConvertFunc(Type type)
+        public static Func<IConvertible, object, IFormatProvider, object> TryGetConvertFunc(Type type)
         {
-            Func<IConvertible, IFormatProvider, object, object> func;
+            Func<IConvertible, object, IFormatProvider, object> func;
 
             return dicConvert.TryGetValue(type, out func) ? func : null;
         }

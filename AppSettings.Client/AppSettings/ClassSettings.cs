@@ -12,13 +12,9 @@ namespace AppSettings.Client.AppSettings
         {
             get
             {
-                return $"APPSETTINGS_CLASS_{ReflectionHelper.GetRealName<TSource>().ToUpper()}_ARRAY";
+                var genericType = typeof(TSource);
+                return $"APPSETTINGS_CLASS_{genericType.GetRealName().ToUpper()}" + (genericType.IsGenericType ? "_ARRAY" : string.Empty);
             }
-        }
-
-        public TSource Load()
-        {
-            return this.Load(null);
         }
 
         public TSource Load(string parentFull)

@@ -12,7 +12,7 @@ namespace AppSettings.Client.AppSettings
 {
     internal abstract class AppSettingsBase
     {
-        private const string XmlCacheKey = "XMLCACHEKEY";
+        private const string XElementCacheKey = "XELEMENT_CACHE_KEY";
 
         private bool IsRemoteFile = false; //远程文件
 
@@ -47,16 +47,16 @@ namespace AppSettings.Client.AppSettings
 
         protected IEnumerable<XElement> AppSettingElement(string parentFull)
         {
-            var elements = CacheHelper.Get<IEnumerable<XElement>>(XmlCacheKey);
+            var elements = CacheHelper.Get<IEnumerable<XElement>>(XElementCacheKey);
             if (elements == null)
             {
                 elements = XDocument.Load(AppSettingsPath).Elements().Where(s => s.Name.LocalName.EqualsIgnoreCase("AppSettings")).Elements();
                 if (elements != null)
                 {
                     if (IsRemoteFile)
-                        CacheHelper.Set(XmlCacheKey, elements);
+                        CacheHelper.Set(XElementCacheKey, elements);
                     else
-                        CacheHelper.Set(XmlCacheKey, elements, CacheHelper.CreateMonitor(AppSettingsPath));
+                        CacheHelper.Set(XElementCacheKey, elements, CacheHelper.CreateMonitor(AppSettingsPath));
                 }
             }
 
