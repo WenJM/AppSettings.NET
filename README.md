@@ -11,9 +11,9 @@
 &emsp;\<Person Name="张三" Age="18" Height="185" /><br />
 &emsp;\<Orders><br />
 &emsp;&emsp;\<Order><br />
-&emsp;&emsp;&emsp;\<Amount>15</Amount><br />
-&emsp;&emsp;&emsp;\<Name>理财卷</Name><br />
-&emsp;&emsp;&emsp;\<Code>SFR324234</Code><br />
+&emsp;&emsp;&emsp;\<Amount>15\</Amount><br />
+&emsp;&emsp;&emsp;\<Name>理财卷\</Name><br />
+&emsp;&emsp;&emsp;\<Code>SFR324234\</Code><br />
 &emsp;&emsp;\</Order><br />
 &emsp;&emsp;\<Order Amount="17.00" Name="鼠标" Code="SFR544333" /><br />
 &emsp;\</Orders><br />
