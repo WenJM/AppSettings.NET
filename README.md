@@ -24,7 +24,7 @@
 
 使用方法：<br />
 
-1、add键值：AppSettingClient.AppSettings["name"]<br />
+1、键值：AppSettingClient.AppSettings["name"]<br />
 2、属性值：AppSettingClient.AttributesValue("Person", "Name")<br />
 3、实体：AppSettingClient\<Person>.Load()<br />
 3、实体集合：AppSettingClient\<List\<Person>.Load("Orders")。（需要传入路径Orders）<br />
