@@ -40,7 +40,7 @@ namespace AppSettings.Client.Scan
         {
             this._timer = new Timer();
             this._timer.Elapsed += new ElapsedEventHandler(DoScan);
-            this._timer.Interval = this._interval;
+            this._timer.Interval = this._interval * 1000;
             this._timer.AutoReset = true;
             this._timer.Enabled = false;
         }

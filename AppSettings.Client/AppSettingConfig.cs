@@ -33,7 +33,7 @@ namespace AppSettings.Client
         /// <summary>
         /// 扫描间隔
         /// </summary>
-        public static int ScanInterval = 1000 * 60 * 5;
+        public static int ScanInterval = 60 * 5;
 
         static AppSettingConfig()
         {
