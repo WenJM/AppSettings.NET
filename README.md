@@ -34,4 +34,4 @@
 1、如果需要把配置信息加载在缓存中，可以设置：AppSettingConfig.IsCacheConfig=true <br />
 2、缓存已添加对文件的依赖，配置文件内容更新时会清空缓存，下次读取时自动初始化。<br />
 3、如果是http远程配置文件，默认会启动配置文件的扫描，有变更时，会使缓存失效，下次读取时自动初始化。<br />
-&emsp;扫描间隔可以设置：AppSettingConfig.ScanInterval &emsp;已秒为单位，默认间隔为5。
+&emsp;扫描间隔可以设置：AppSettingConfig.ScanInterval&emsp;以秒为单位，默认间隔为5分钟。
