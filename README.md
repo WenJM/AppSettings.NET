@@ -6,7 +6,7 @@
 
 2、自定义配置文件必须是以AppSettings节点开始。<br />
 例如：
-<?xml version="1.0"?><br />
+\<?xml version="1.0"?><br />
 \<appSettings\><br />
 &emsp;\<add key="name" value="zhangsan" /><br />
 &emsp;\<Person Name="张三" Age="18" Height="185" /><br />
