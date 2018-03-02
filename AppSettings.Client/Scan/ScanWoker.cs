@@ -16,7 +16,7 @@ namespace AppSettings.Client.Scan
 
         private static bool isStart = false;
 
-        private DateTime? _lastModified;
+        private DateTime _lastModified;
 
         private string _uri;
 
@@ -61,7 +61,10 @@ namespace AppSettings.Client.Scan
         {
             lock (lockObj)
             {
-                this._lastModified = this._func?.Invoke(this._lastModified.Value);
+                if (this._func != null)
+                {
+                    this._lastModified = this._func(this._lastModified);
+                }
             }
         }
 
@@ -84,9 +87,9 @@ namespace AppSettings.Client.Scan
                         if (_woker == null)
                         {
                             _woker = new ScanWoker(
-                            AppSettingConfig.AppSettingsPath,
-                            AppSettingConfig.ScanInterval,
-                            Utils.ReadLastModified(AppSettingConfig.AppSettingsPath),
+                                AppSettingConfig.AppSettingsPath,
+                                AppSettingConfig.ScanInterval,
+                                Utils.ReadLastModified(AppSettingConfig.AppSettingsPath),
                             (d) =>
                             {
                                 var lastModified = Utils.ReadLastModified(AppSettingConfig.AppSettingsPath);
