@@ -5,7 +5,7 @@
 1、必须在配置文件Web.config中的节点AppSettings添加自定义配置的物理路径，key="AppSettingsPath"。<br />
 
 2、自定义配置文件必须是以AppSettings节点开始。<br />
-例如：
+例如：<br />
 \<?xml version="1.0"?><br />
 \<appSettings\><br />
 &emsp;\<add key="name" value="zhangsan" /><br />
