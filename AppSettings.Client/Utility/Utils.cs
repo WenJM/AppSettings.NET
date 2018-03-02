@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
+using System.Collections.Generic;
 
 namespace AppSettings.Client.Utility
 {
@@ -102,32 +100,39 @@ namespace AppSettings.Client.Utility
 
         public static bool CheckUri(string uri)
         {
-            HttpWebRequest re = null;
-            HttpWebResponse res = null;
             try
             {
-                re = (HttpWebRequest)WebRequest.Create(uri);
-                re.Method = "HEAD";
-                re.Timeout = 100;
-                res = (HttpWebResponse)re.GetResponse();
-                return (res.StatusCode == HttpStatusCode.OK);
+                var http = (HttpWebRequest)WebRequest.Create(uri);
+                http.Method = "HEAD";
+                http.Timeout = 1000 * 60;
+                using (var response = (HttpWebResponse)http.GetResponse())
+                {
+                    http.Abort();
+                    http = null;
+                    return (response.StatusCode == HttpStatusCode.OK);
+                }
             }
             catch
             {
                 return false;
             }
-            finally
+        }
+
+        public static DateTime ReadLastModified(string uri)
+        {
+            try
             {
-                if (res != null)
+                var http = (HttpWebRequest)WebRequest.Create(uri);
+                http.Method = "HEAD";
+                http.Timeout = 1000 * 60;
+                using (var res = (HttpWebResponse)http.GetResponse())
                 {
-                    res.Close();
-                    res = null;
+                    return res.LastModified;
                 }
-                if (re != null)
-                {
-                    re.Abort();
-                    re = null;
-                }
+            }
+            catch
+            {
+                return DateTime.MinValue;
             }
         }
     }

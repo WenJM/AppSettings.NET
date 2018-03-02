@@ -15,6 +15,16 @@ namespace AppSettings.Client.Extensions
                     genericType.GetGenericArguments().FirstOrDefault().GetRealName();
         }
 
+        public static bool IsBasic(this Type type)
+        {
+            return Utils.IsBasic(type);
+        }
+
+        public static bool IsNullable(this Type type)
+        {
+            return Utils.IsNullable(type);
+        }
+
         public static object GetDefaultValue(this Type convertType, object value)
         {
             try
@@ -34,7 +44,7 @@ namespace AppSettings.Client.Extensions
             {
                 throw new ArgumentNullException("convertType is null");
             }
-            if (convertType.IsValueType && !Utils.IsNullable(convertType) && value == null)
+            if (convertType.IsValueType && !convertType.IsNullable() && value == null)
             {
                 throw new InvalidCastException("vauleType is null");
             }

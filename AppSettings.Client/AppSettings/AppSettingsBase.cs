@@ -4,62 +4,21 @@ using System.Linq;
 using System.Configuration;
 using System.Collections.Generic;
 using System.Xml.Linq;
+using AppSettings.Client.Scan;
 using AppSettings.Client.Helper;
-using AppSettings.Client.Utility;
 using AppSettings.Client.Extensions;
+using AppSettings.Client.Utility;
 
 namespace AppSettings.Client.AppSettings
 {
     internal abstract class AppSettingsBase
     {
-        private const string XElementCacheKey = "XELEMENT_CACHE_KEY";
-
-        private bool IsRemoteFile = false; //远程文件
-
         protected abstract string Key { get;}
-
-        protected string AppSettingsPath
-        {
-            get
-            {
-                string filePath = ConfigurationManager.AppSettings["AppSettingsPath"];
-                if (string.IsNullOrEmpty(filePath))
-                {
-                    throw new ConfigurationErrorsException("自定义配置文件配置AppSettingsPath未找到");
-                }
-                if (filePath.StartsWith("~"))
-                {
-                    filePath = AppDomain.CurrentDomain.BaseDirectory + "\\" + filePath.TrimStart('~').TrimStart('\\');
-                }
-                if (File.Exists(filePath))
-                {
-                    return filePath;
-                }
-                if (Utils.CheckUri(filePath))
-                {
-                    IsRemoteFile = true;
-
-                    return filePath;
-                }
-                throw new ConfigurationErrorsException("自定义配置文件不存在");
-            }
-        }
 
         protected IEnumerable<XElement> AppSettingElement(string parentFull)
         {
-            var elements = CacheHelper.Get<IEnumerable<XElement>>(XElementCacheKey);
-            if (elements == null)
-            {
-                elements = XDocument.Load(AppSettingsPath).Elements().Where(s => s.Name.LocalName.EqualsIgnoreCase("AppSettings")).Elements();
-                if (elements != null)
-                {
-                    if (IsRemoteFile)
-                        CacheHelper.Set(XElementCacheKey, elements);
-                    else
-                        CacheHelper.Set(XElementCacheKey, elements, CacheHelper.CreateMonitor(AppSettingsPath));
-                }
-            }
-
+            //读取XML文件
+            var elements = XmlHelper.TryGetXElementOfCache(AppSettingConfig.XElementCacheKey, AppSettingConfig.AppSettingsPath, AppSettingConfig.IsRemoteFile);
             if (!string.IsNullOrEmpty(parentFull))
             {
                 parentFull.Split('.','\\','/').ToList().ForEach(x =>
@@ -67,22 +26,29 @@ namespace AppSettings.Client.AppSettings
                     elements = elements.Where(s => s.Name.LocalName.EqualsIgnoreCase(x)).Elements();
                 });
             }
+
+            //启动远程文件扫描
+            if (AppSettingConfig.IsRemoteFile && AppSettingConfig.IsScanFile)
+            {
+                ScanWoker.Current.Start();
+            }
+
             return elements;
         }
 
         protected abstract TValue LoadConfigFromFile<TValue>(string parentFull) where TValue : class;
 
-        internal TValue LoadConfig<TValue>(string parentFull) where TValue : class
+        public TValue LoadConfig<TValue>(string parentFull) where TValue : class
         {
             try
             {
                 var settings = LoadConfigFromFile<TValue>(parentFull);
-                if (AppSettingConfig.IsLoadCache && settings != null)
+                if (AppSettingConfig.IsCacheConfig && settings != null)
                 {
-                    if (IsRemoteFile)
-                        CacheHelper.Set(Key, settings);
+                    if (AppSettingConfig.IsRemoteFile)
+                        CacheHelper.Set(Key, settings, new List<string> { AppSettingConfig.XElementCacheKey });
                     else
-                        CacheHelper.Set(Key, settings, CacheHelper.CreateMonitor(AppSettingsPath));
+                        CacheHelper.Set(Key, settings, CacheHelper.CreateMonitor(AppSettingConfig.AppSettingsPath));
                 }
                 return settings;
             }

@@ -57,7 +57,7 @@ namespace AppSettings.Client.Helper
             var obj = buildType.Assembly.CreateInstance(buildType.FullName);
             foreach (var current in propertes)
             {
-                if (current.PropertyType.IsGenericType && !Utils.IsBasic(current.PropertyType.GetGenericArguments().FirstOrDefault()))
+                if (current.PropertyType.IsGenericType && !current.PropertyType.GetGenericArguments().FirstOrDefault().IsBasic())
                 {
                     var typeSub = current.PropertyType.GetGenericArguments().FirstOrDefault();
                     
@@ -67,7 +67,7 @@ namespace AppSettings.Client.Helper
                     
                     current.SetValue(obj, listSub, null);
                 }
-                else if (!current.PropertyType.IsGenericType && !Utils.IsBasic(current.PropertyType))
+                else if (!current.PropertyType.IsGenericType && !current.PropertyType.IsBasic())
                 {
                     var elementsSub = elements.Where(s => s.Name.LocalName.EqualsIgnoreCase(current.PropertyType.Name)).ToList();
                     

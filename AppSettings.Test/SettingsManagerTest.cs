@@ -7,23 +7,7 @@ using AppSettings.Client;
 using System.Configuration;
 
 namespace AppSettings.Test
-{    
-    public class Person
-    {
-        public string Name { get; set; }
-        public int Age { get; set; }
-        public int Height { get; set; }
-    }
-
-    public class Order
-    {
-        public decimal Amount { get; set; }
-
-        public string Name { get; set; }
-
-        public string Code { get; set; }
-    }
-
+{ 
     [TestClass]
     public class SettingsManagerTest
     {
@@ -67,9 +51,9 @@ namespace AppSettings.Test
         [TestMethod]
         public void RunTest()
         {
-            AppSettingConfig.IsLoadCache = true; //缓存配置
+            AppSettingConfig.IsCacheConfig = false; //缓存配置
 
-            RunStart.Run("系统配置读取",100000, (i)=>
+            RunStart.Run("系统配置读取",1000000, (i)=>
             {
                 string filePath = ConfigurationManager.AppSettings["AppSettingsPath"];
                 if (i == 0)
@@ -78,7 +62,7 @@ namespace AppSettings.Test
                 }
             });
 
-            RunStart.Run("普通配置读取", 100000, (i) =>
+            RunStart.Run("普通配置读取", 1000000, (i) =>
             {
                 var zhangsan = AppSettingClient.AppSettings["zhangsan"];
                 if (i == 0)
@@ -87,7 +71,7 @@ namespace AppSettings.Test
                 }
             });
 
-            RunStart.Run("属性配置读取",100000, (i) =>
+            RunStart.Run("属性配置读取",1000000, (i) =>
             {
                 var age = AppSettingClient.AttributesValue("person", "age");
                 if (i == 0)
@@ -96,7 +80,7 @@ namespace AppSettings.Test
                 }
             });
 
-            RunStart.Run("类型配置读取",100000, (i) =>
+            RunStart.Run("类型配置读取",1000000, (i) =>
             {
                 var person = AppSettingClient<Person>.Load();
                 if (i == 0)
@@ -105,7 +89,7 @@ namespace AppSettings.Test
                 }
             });
 
-            RunStart.Run("类型集合配置读取",100000, (i) =>
+            RunStart.Run("类型集合配置读取",1000000, (i) =>
             {
                 var orders = AppSettingClient<List<Order>>.Load("Orders");
                 if (i == 0)
@@ -117,5 +101,21 @@ namespace AppSettings.Test
                 }
             });
         }
+    }
+
+    public class Person
+    {
+        public string Name { get; set; }
+        public int Age { get; set; }
+        public int Height { get; set; }
+    }
+
+    public class Order
+    {
+        public decimal Amount { get; set; }
+
+        public string Name { get; set; }
+
+        public string Code { get; set; }
     }
 }

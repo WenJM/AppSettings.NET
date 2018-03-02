@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Collections.Generic;
 using System.Runtime.Caching;
 
@@ -17,24 +18,29 @@ namespace AppSettings.Client.Helper
 
         public static void Set<T>(string key, T value)
         {
-            Set(key, value, 0);
+            Set(key, value, 0, null, null);
         }
 
         public static void Set<T>(string key, T value, int expiration)
         {
-            Set(key, value, expiration, null);
+            Set(key, value, expiration, null, null);
         }
 
         public static void Set<T>(string key, T value, ChangeMonitor monitor)
         {
-            Set(key, value, 0, monitor);
+            Set(key, value, 0, monitor, null);
         }
 
-        public static void Set<T>(string key, T value, int expiration, ChangeMonitor monitor)
+        public static void Set<T>(string key, T value, IList<string> keys)
+        {
+            Set(key, value, 0, null, keys);
+        }
+
+        public static void Set<T>(string key, T value, int expiration, ChangeMonitor monitor, IList<string> keys)
         {
             _Cache.Remove(key);
 
-            _Cache.Set(key, value, CreatePolicy(expiration, monitor));
+            _Cache.Set(key, value, CreatePolicy(expiration, monitor, keys));
         }
 
         public static ChangeMonitor CreateMonitor(string filePath)
@@ -54,7 +60,7 @@ namespace AppSettings.Client.Helper
             return new HostFileChangeMonitor(filePaths);
         }
 
-        private static CacheItemPolicy CreatePolicy(int expiration, ChangeMonitor change)
+        private static CacheItemPolicy CreatePolicy(int expiration, ChangeMonitor change, IList<string> keys)
         {
             var policy = new CacheItemPolicy();
             if (expiration <= 0)
@@ -68,10 +74,18 @@ namespace AppSettings.Client.Helper
                 policy.Priority = CacheItemPriority.Default;
             }
 
+            //其它缓存Keys依赖
+            if (keys != null && keys.Any())
+            {
+                policy.ChangeMonitors.Add(_Cache.CreateCacheEntryChangeMonitor(keys));
+            }
+
+            ///文件依赖
             if (change != null)
             {
                 policy.ChangeMonitors.Add(change);
             }
+
             return policy;
         }
     }
