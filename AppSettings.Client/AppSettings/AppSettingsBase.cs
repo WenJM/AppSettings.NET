@@ -15,6 +15,8 @@ namespace AppSettings.Client.AppSettings
     {
         protected abstract string Key { get;}
 
+        protected abstract TValue LoadConfigFromFile<TValue>(string parentFull) where TValue : class;
+
         protected IEnumerable<XElement> AppSettingElement(string parentFull)
         {
             //读取XML文件
@@ -36,8 +38,6 @@ namespace AppSettings.Client.AppSettings
             return elements;
         }
 
-        protected abstract TValue LoadConfigFromFile<TValue>(string parentFull) where TValue : class;
-
         public TValue LoadConfig<TValue>(string parentFull) where TValue : class
         {
             try
@@ -52,7 +52,7 @@ namespace AppSettings.Client.AppSettings
                 }
                 return settings;
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
                 throw new ConfigurationErrorsException(ex.Message);
             }

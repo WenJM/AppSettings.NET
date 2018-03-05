@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using System.Text;
 
@@ -37,5 +37,8 @@ namespace AppSettings.Client.Utility
         public static readonly Type TypeOfDecimal_Nullable = typeof(decimal?);
         public static readonly Type TypeOfDateTime = typeof(DateTime);
         public static readonly Type TypeOfDateTime_Nullable = typeof(DateTime?);
+
+        public static readonly Type TypeOfIList = typeof(IList);
+        public static readonly Type TypeOfIEnumerable = typeof(IEnumerable);
     }
 }

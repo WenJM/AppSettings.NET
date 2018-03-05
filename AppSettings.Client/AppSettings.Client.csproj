@@ -52,6 +52,7 @@
     <Compile Include="AppSettingClient.cs" />
     <Compile Include="AppSettings\ValueSettings.cs" />
     <Compile Include="AppSettings\XmlSettings.cs" />
+    <Compile Include="Exception\AppSettingException.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
     <Compile Include="Helper\CacheHelper.cs" />
     <Compile Include="Helper\ReflectionHelper.cs" />

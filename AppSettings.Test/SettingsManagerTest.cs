@@ -49,6 +49,14 @@ namespace AppSettings.Test
         }
 
         [TestMethod]
+        public void GetEntitys2()
+        {
+            var orders = AppSettingClient<Orders>.Load();
+
+            Assert.IsNotNull(orders);
+        }
+
+        [TestMethod]
         public void RunTest()
         {
             AppSettingConfig.IsCacheConfig = false; //缓存配置
@@ -117,5 +125,10 @@ namespace AppSettings.Test
         public string Name { get; set; }
 
         public string Code { get; set; }
+    }
+
+    public class Orders
+    {
+        public List<Order> Order { get; set; }
     }
 }

@@ -26,7 +26,7 @@ namespace AppSettings.Client.Scan
 
         private Func<DateTime, DateTime> _func;
 
-        public ScanWoker(string uri, int interval, DateTime lastModified, Func<DateTime, DateTime> func)
+        private ScanWoker(string uri, int interval, DateTime lastModified, Func<DateTime, DateTime> func)
         {
             this._uri = uri;
             this._interval = interval;

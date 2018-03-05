@@ -29,20 +29,12 @@ namespace AppSettings.Client.AppSettings
 
         protected override TValue LoadConfigFromFile<TValue>(string parentFull)
         {
-            var className = ReflectionHelper.GetRealName<TValue>();
-            var elements = this.AppSettingElement(parentFull).Where(s => s.Name.LocalName.EqualsIgnoreCase(className));
+            var elements = this.AppSettingElement(parentFull);
             if (!elements.Any())
             {
                 return default(TValue);
             }
-
-            var tSoureType = typeof(TValue);
-            if (tSoureType.IsGenericType)
-            {
-                return ReflectionHelper.BuildArray(elements.ToList(), tSoureType.GetGenericArguments().FirstOrDefault()) as TValue;
-            }
-
-            return ReflectionHelper.BuildObj(elements.ToList(), tSoureType) as TValue;
+            return ReflectionHelper.Build(typeof(TValue), elements) as TValue;
         }
     }
 }

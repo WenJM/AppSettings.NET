@@ -1,8 +1,9 @@
-﻿using AppSettings.Client.Utility;
+﻿
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using AppSettings.Client.Utility;
 
 namespace AppSettings.Client.Extensions
 {
@@ -13,6 +14,13 @@ namespace AppSettings.Client.Extensions
             return !genericType.IsGenericType ?
                     genericType.Name :
                     genericType.GetGenericArguments().FirstOrDefault().GetRealName();
+        }
+
+        public static Type GetRealType(this Type genericType)
+        {
+            return !genericType.IsGenericType ?
+                    genericType :
+                    genericType.GetGenericArguments().FirstOrDefault().GetRealType();
         }
 
         public static bool IsBasic(this Type type)
@@ -31,7 +39,7 @@ namespace AppSettings.Client.Extensions
             {
                 value = ConvertValue(convertType, value);
             }
-            catch (Exception)
+            catch (System.Exception)
             {
                 value = default(object);
             }

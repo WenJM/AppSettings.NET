@@ -6,6 +6,7 @@ using System.Xml.Linq;
 using System.Reflection;
 using AppSettings.Client.Utility;
 using AppSettings.Client.Extensions;
+using AppSettings.Client.Exception;
 
 namespace AppSettings.Client.Helper
 {
@@ -13,82 +14,94 @@ namespace AppSettings.Client.Helper
     /// 反射帮助类
     /// </summary>
     public static class ReflectionHelper
-    {
-        public static string GetRealName<TSource>()
+    {   
+        public static object Build(Type tbuild, IEnumerable<XElement> elements)
         {
-            return typeof(TSource).GetRealName();
-        }
+            if (elements == null || !elements.Any()) return null;
 
-        public static IList BuildArray(List<XElement> elements, Type buildType)
-        {
-            Type listType = typeof(List<>).MakeGenericType(buildType);
+            if (tbuild.IsBasic()) throw new AppSettingException("please try AppSetting[key]");
 
-            IList list = Activator.CreateInstance(listType) as IList;
-
-            if (elements.Count == 0) return list;
-
-            var propertes = buildType.GetProperties();
-            foreach (XElement element in elements)
-            {
-                var obj = BuildObj(element, buildType, propertes);
-                list.Add(obj);
-            }
-            return list;
-        }
-
-        public static object BuildObj(List<XElement> elements, Type buildType)
-        {
-            if (elements.Count == 0)
-                return null;
-
-            var element = elements[0];
-
-            var propertes = buildType.GetProperties();
-            var obj = BuildObj(element, buildType, propertes);
+            var obj = Build(tbuild, elements, null, null);
 
             return obj;
         }
 
-        public static object BuildObj(XElement element, Type buildType, PropertyInfo[] propertes)
+        public static object Build(Type tbuild, IEnumerable<XElement> elements, PropertyInfo info, object obj)
         {
-            var elements = element.Elements();
-            var attributes = element.Attributes();
+            if (elements == null || !elements.Any()) return obj;
 
-            var obj = buildType.Assembly.CreateInstance(buildType.FullName);
-            foreach (var current in propertes)
+            //Basic
+            if (tbuild.IsBasic())
             {
-                if (current.PropertyType.IsGenericType && !current.PropertyType.GetGenericArguments().FirstOrDefault().IsBasic())
+                var element = elements.FirstOrDefault(s => s.Name.LocalName.EqualsIgnoreCase(info.Name));
+
+                BuildValue(obj, info, tbuild.GetDefaultValue(element.Value));
+
+                return obj;
+            }
+            //Class
+            else if (!tbuild.IsGenericType)
+            {
+                return BuildObj(tbuild, elements, info, obj);
+            }
+            //Generice
+            else
+            {
+                var interfaces = tbuild.GetInterfaces();
+
+                //List
+                if (interfaces.Contains(UtilConstants.TypeOfIList) || interfaces.Contains(UtilConstants.TypeOfIEnumerable))
                 {
-                    var typeSub = current.PropertyType.GetGenericArguments().FirstOrDefault();
-                    
-                    var elementsSub = elements.Where(s => s.Name.LocalName.EqualsIgnoreCase(typeSub.Name)).ToList();
-                    
-                    var listSub = BuildArray(elementsSub, typeSub);
-                    
-                    current.SetValue(obj, listSub, null);
-                }
-                else if (!current.PropertyType.IsGenericType && !current.PropertyType.IsBasic())
-                {
-                    var elementsSub = elements.Where(s => s.Name.LocalName.EqualsIgnoreCase(current.PropertyType.Name)).ToList();
-                    
-                    var innerObj = BuildObj(elementsSub, current.PropertyType);
-                    
-                    current.SetValue(obj, innerObj, null);
+                    var typeGeneric = tbuild.GetGenericArguments().FirstOrDefault();
+                    var typeValue = typeof(List<>).MakeGenericType(typeGeneric);
+                    var list = Activator.CreateInstance(typeValue) as IList;
+
+                    var elementSub = elements.Where(s => s.Name.LocalName.EqualsIgnoreCase(typeGeneric.Name));
+                    var propertes = typeGeneric.GetProperties();
+                    foreach (var e in elementSub)
+                    {
+                        var objSub = Build(typeGeneric, new List<XElement> { e }, null, null);
+                        list.Add(objSub);
+                    }
+
+                    BuildValue(obj, info, list);
+
+                    return list;
                 }
                 else
                 {
-                    var elementCurrent = elements.FirstOrDefault(s => s.Name.LocalName.EqualsIgnoreCase(current.Name));
-                    var attribute = attributes.FirstOrDefault(s => s.Name.LocalName.EqualsIgnoreCase(current.Name));
-
-                    if (elementCurrent != null || attribute != null)
-                    {
-                        var value = elementCurrent != null ? elementCurrent.Value : attribute.Value;
-
-                        current.SetValue(obj, current.PropertyType.GetDefaultValue(value), null);
-                    }
+                    return BuildObj(tbuild, elements, info, obj);
                 }
             }
-            return obj;
+        }
+
+        private static object BuildObj(Type tbuild, IEnumerable<XElement> elements, PropertyInfo info, object obj)
+        {
+            var element = elements.FirstOrDefault(s => s.Name.LocalName.EqualsIgnoreCase(info != null ? info.Name : tbuild.Name));
+            if (element == null) return null;
+
+            var elementSubs = new List<XElement>();
+            elementSubs.AddRange(element.Elements());
+            elementSubs.AddRange(element.Attributes().Select(s => new XElement(s.Name, s.Value)));
+
+            var objSub = tbuild.Assembly.CreateInstance(tbuild.FullName);
+            var propertes = tbuild.GetProperties();
+            foreach (var p in propertes)
+            {
+                Build(p.PropertyType, elementSubs, p, objSub);
+            }
+
+            BuildValue(obj, info, objSub);
+
+            return objSub;
+        }
+
+        private static void BuildValue(object obj, PropertyInfo info, object value)
+        {
+            if (obj != null && info != null && value != null)
+            {
+                info.SetValue(obj, value);
+            }
         }
     }
 }
