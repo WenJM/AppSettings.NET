@@ -10,9 +10,6 @@ using AppSettings.Client.Exception;
 
 namespace AppSettings.Client.Helper
 {
-    /// <summary>
-    /// 反射帮助类
-    /// </summary>
     public static class ReflectionHelper
     {   
         public static object Build(Type tbuild, IEnumerable<XElement> elements)
@@ -35,7 +32,7 @@ namespace AppSettings.Client.Helper
             {
                 var element = elements.FirstOrDefault(s => s.Name.LocalName.EqualsIgnoreCase(info.Name));
 
-                BuildValue(obj, info, tbuild.GetDefaultValue(element.Value));
+                SetValueCheckNull(info, obj, GetValueConvert(tbuild, element.Value));
 
                 return obj;
             }
@@ -44,7 +41,7 @@ namespace AppSettings.Client.Helper
             {
                 return BuildObj(tbuild, elements, info, obj);
             }
-            //Generice
+            //Generic
             else
             {
                 var interfaces = tbuild.GetInterfaces();
@@ -64,7 +61,7 @@ namespace AppSettings.Client.Helper
                         list.Add(objSub);
                     }
 
-                    BuildValue(obj, info, list);
+                    SetValueCheckNull(info, obj, list);
 
                     return list;
                 }
@@ -91,17 +88,55 @@ namespace AppSettings.Client.Helper
                 Build(p.PropertyType, elementSubs, p, objSub);
             }
 
-            BuildValue(obj, info, objSub);
+            SetValueCheckNull(info, obj, objSub);
 
             return objSub;
         }
 
-        private static void BuildValue(object obj, PropertyInfo info, object value)
+        private static void SetValueCheckNull(PropertyInfo info, object obj, object value)
         {
-            if (obj != null && info != null && value != null)
+            if (info != null && obj != null && value != null)
             {
                 info.SetValue(obj, value);
             }
+        }
+
+        private static object GetValueConvert(Type convertType, object value)
+        {
+            if (convertType == null)
+            {
+                throw new ArgumentNullException("convertType is null");
+            }
+            if (convertType.IsValueType && !convertType.IsNullable() && value == null)
+            {
+                throw new InvalidCastException("vauleType is null");
+            }
+            if (value == null | value.ToString().Length == 0)
+            {
+                return null;
+            }
+
+            var convertible = value as IConvertible;
+            if (convertible == null)
+            {
+                return value;
+            }
+
+            if (convertType == UtilConstants.TypeOfBoolean || convertType == UtilConstants.TypeOfBoolean_Nullable)
+            {
+                if (value.ToString().Equals("1"))
+                    return true;
+                if (value.ToString().Equals("0"))
+                    return false;
+            }
+
+            var func = Utils.TryGetConvertFunc(convertType);
+            if (func != null)
+            {
+                return func(convertible, value, null);
+            }
+
+            return value;
         }
     }
 }
